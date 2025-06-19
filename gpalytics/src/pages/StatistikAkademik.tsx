@@ -76,6 +76,35 @@ const StatistikAkademik = () => {
                     </button>
                 </div>
                 <div className="bottomer col-md-10 pt-2 ms-auto">
+                  {/* Statistik Ringkasan */}
+                    <div className="row g-2 mb-3">
+                      {/* Mata Kuliah */}
+                      <div className="col-md-4">
+                          <div className="border-start border-4 border-primary bg-white rounded shadow p-4 h-100">
+                          <p className="text-uppercase text-secondary fw-semibold mb-2 small">Jumlah Mata Kuliah</p>
+                          <h1 className="fw-bold text-dark display-6 mb-0">27</h1>
+                          <p className="text-muted small mt-1">Total dari seluruh semester</p>
+                          </div>
+                      </div>
+
+                      {/* Jumlah SKS */}
+                      <div className="col-md-4">
+                          <div className="border-start border-4 border-success bg-white rounded shadow p-4 h-100">
+                          <p className="text-uppercase text-secondary fw-semibold mb-2 small">Jumlah SKS</p>
+                          <h1 className="fw-bold text-dark display-6 mb-0">87<span className="text-muted fs-5"> / 144</span></h1>
+                          <p className="text-muted small mt-1">Total SKS lulus dibanding maksimum</p>
+                          </div>
+                      </div>
+
+                      {/* Rata-rata Nilai */}
+                      <div className="col-md-4">
+                          <div className="border-start border-4 border-warning bg-white rounded shadow p-4 h-100">
+                          <p className="text-uppercase text-secondary fw-semibold mb-2 small">Rata-rata Nilai</p>
+                          <h1 className="fw-bold text-dark display-6 mb-0">83.4</h1>
+                          <p className="text-muted small mt-1">Skor gabungan seluruh semester</p>
+                          </div>
+                      </div>
+                    </div>
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
                         <h5 className="fw-semibold mb-3">Semua Nilai</h5>
                         <ResponsiveContainer width="100%" height={300}>
@@ -96,8 +125,8 @@ const StatistikAkademik = () => {
   <ResponsiveContainer width="100%" height={250}>
     <BarChart data={distribusiNilai}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="range" />
-      <YAxis />
+      <XAxis dataKey="range" label={{ value: "Range", position: "insideBottom", offset: -5 }} />
+      <YAxis label={{ value: "Jumlah", angle: -90, position: "insideLeft" }} />
       <Tooltip />
       <Bar dataKey="jumlah" fill="#0d6efd" radius={[4, 4, 0, 0]} />
     </BarChart>
@@ -109,8 +138,8 @@ const StatistikAkademik = () => {
   <ResponsiveContainer width="100%" height={250}>
     <LineChart data={ipSemester}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="semester" />
-      <YAxis domain={[0, 4]} />
+      <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+      <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
       <Tooltip />
       <Line type="monotone" dataKey="ip" stroke="#ffc107" strokeWidth={3} dot={{ r: 5 }} />
     </LineChart>
@@ -155,8 +184,8 @@ const StatistikAkademik = () => {
   <ResponsiveContainer width="100%" height={250}>
     <LineChart data={prediksiIpkData}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="semester" />
-      <YAxis domain={[0, 4]} />
+      <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+      <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
       <Tooltip />
       <Line type="monotone" dataKey="ipk" stroke="#20c997" strokeWidth={3} />
     </LineChart>
@@ -169,12 +198,12 @@ const StatistikAkademik = () => {
   <ResponsiveContainer width="100%" height={250}>
     <LineChart data={regresiData}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="semester" />
-      <YAxis domain={[0, 100]} />
+      <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+      <YAxis domain={[0, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
       <Tooltip />
       <Legend />
       <Line type="monotone" dataKey="nilai" stroke="#0d6efd" strokeWidth={3} name="Nilai Akhir" />
-      <Line type="monotone" dataKey="prediksi" stroke="#ffc107" strokeDasharray="5 5" name="Regresi" />
+      <Line type="monotone" dataKey="prediksi" stroke="#ffc107" strokeWidth={3} strokeDasharray="5 5" name="Regresi" />
     </LineChart>
   </ResponsiveContainer>
 
@@ -184,36 +213,7 @@ const StatistikAkademik = () => {
   </div>
 </div>
 
-                    {/* Statistik Ringkasan */}
-                    <div className="row g-4">
-                    {/* Mata Kuliah */}
-                    <div className="col-md-4">
-                        <div className="border-start border-4 border-primary bg-white rounded shadow p-4 h-100">
-                        <p className="text-uppercase text-secondary fw-semibold mb-2 small">Jumlah Mata Kuliah</p>
-                        <h1 className="fw-bold text-dark display-6 mb-0">27</h1>
-                        <p className="text-muted small mt-1">Total dari seluruh semester</p>
-                        </div>
-                    </div>
-
-                    {/* Jumlah SKS */}
-                    <div className="col-md-4">
-                        <div className="border-start border-4 border-success bg-white rounded shadow p-4 h-100">
-                        <p className="text-uppercase text-secondary fw-semibold mb-2 small">Jumlah SKS</p>
-                        <h1 className="fw-bold text-dark display-6 mb-0">87<span className="text-muted fs-5"> / 144</span></h1>
-                        <p className="text-muted small mt-1">Total SKS lulus dibanding maksimum</p>
-                        </div>
-                    </div>
-
-                    {/* Rata-rata Nilai */}
-                    <div className="col-md-4">
-                        <div className="border-start border-4 border-warning bg-white rounded shadow p-4 h-100">
-                        <p className="text-uppercase text-secondary fw-semibold mb-2 small">Rata-rata Nilai</p>
-                        <h1 className="fw-bold text-dark display-6 mb-0">83.4</h1>
-                        <p className="text-muted small mt-1">Skor gabungan seluruh semester</p>
-                        </div>
-                    </div>
-                    </div>
-
+                    
                 </div>
             </div>
         </div>
