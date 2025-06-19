@@ -212,7 +212,7 @@ const GPALyticsDashboard = () => {
                             </div>
 
                             <div className='aiMobile d-md-none w-auto position-fixed bottom-0 end-0'>
-                                <button className='btn btn-primary p-2 px-3 m-4 rounded' onClick={() => setShowModal(true)} style={{fontSize: "1.3rem", fontWeight: "600", zIndex: "9999"}}>
+                                <button className='btn btn-primary p-2 px-3 m-4 rounded' onClick={() => setShowModal(true)} style={{fontSize: "1.3rem", fontWeight: "600", zIndex: "999999999"}}>
                                     🤖 AI Consultant
                                 </button>
                             </div>
@@ -224,10 +224,10 @@ const GPALyticsDashboard = () => {
                                 <div className="bg-white h-100 p-3 rounded shadow-sm">
                                     <h6>Mata kuliah Dengan Nilai Tertinggi</h6>
                                     <ul className="list-group">
-                                    <li className="list-group-item">KOMPUTASI BERBASIS WEB - 4</li>
-                                    <li className="list-group-item">SOFTWARE ENGINEERING - 3.7</li>
-                                    <li className="list-group-item">STATISTIKA DASAR - 3.5</li>
-                                    <li className="list-group-item">BASIS DATA - 3.3</li>
+                                        <li className="list-group-item">KOMPUTASI BERBASIS WEB - 4</li>
+                                        <li className="list-group-item">SOFTWARE ENGINEERING - 3.7</li>
+                                        <li className="list-group-item">STATISTIKA DASAR - 3.5</li>
+                                        <li className="list-group-item">BASIS DATA - 3.3</li>
                                     </ul>
                                     <a href="#">Selengkapnya →</a>
                                 </div>
