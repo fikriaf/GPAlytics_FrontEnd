@@ -246,8 +246,8 @@ const Mahasiswa = () => {
                                         </select>
                                     </div>
 
-                                    <div className='d-flex mt-2 gap-2'>
-                                        <div className="mb-3">
+                                    <div className='col d-md-flex mt-2 gap-2 mb-3'>
+                                        <div className="">
                                             <label className="form-label fw-semibold">Nilai</label>
                                             <input
                                                 type="number"
@@ -262,7 +262,7 @@ const Mahasiswa = () => {
                                             />
                                         </div>
 
-                                        <div className="mb-3">
+                                        <div className="">
                                             <label className="form-label fw-semibold">Tipe Nilai</label>
                                             <select
                                                 name="tipe_nilai"
@@ -276,7 +276,7 @@ const Mahasiswa = () => {
                                             </select>
                                         </div>
 
-                                        <div className="mb-3">
+                                        <div className="">
                                             <label className="form-label fw-semibold">Semester</label>
                                             <input
                                                 type="number"
@@ -334,7 +334,7 @@ const Mahasiswa = () => {
                                     <div className="ColumnRight col-md-8 row mt-3">
                                         <div className="col-md-6 col-4 mb-3">
                                             <span className="d-block mb-1">Gender</span>
-                                            <strong className="d-block">{updateProfile?.gender || 'Laki-laki/Perempuan'}</strong>
+                                            <strong className="d-block">{updateProfile?.gender || 'L/P'}</strong>
                                         </div>
                                         <div className="col-md-6 col-4 mb-3">
                                             <span className="d-block mb-1">Umur</span>
