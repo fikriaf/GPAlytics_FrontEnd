@@ -246,8 +246,8 @@ const Mahasiswa = () => {
                                         </select>
                                     </div>
 
-                                    <div className='col d-md-flex mt-2 gap-2 mb-3'>
-                                        <div className="mb-2">
+                                    <div className='col d-md-flex mt-2 gap-3 mb-3'>
+                                        <div className="mb-3">
                                             <label className="form-label fw-semibold">Nilai</label>
                                             <input
                                                 type="number"
@@ -262,7 +262,7 @@ const Mahasiswa = () => {
                                             />
                                         </div>
 
-                                        <div className="mb2">
+                                        <div className="mb-3">
                                             <label className="form-label fw-semibold">Tipe Nilai</label>
                                             <select
                                                 name="tipe_nilai"
