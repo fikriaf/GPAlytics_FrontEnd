@@ -4,6 +4,8 @@ import Sidebar from '../components/Sidebar'
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { FiEdit3 } from 'react-icons/fi';
+
 
 const UpdateNilai = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -13,7 +15,9 @@ const UpdateNilai = () => {
             <div className="row">
                 <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
                 <div className='upper d-md-none fixed-top d-flex items-align-center justify-content-between p-2 ps-3 bg-primary mb-1'>
-                    <h1 className='m-0 text-light'>Update Nilai</h1>
+                    <div className='m-0 p-0 text-light d-flex align-items-center gap-2' style={{fontSize: '1.5rem'}}>
+                        <FiEdit3 size={24} />Update Nilai
+                    </div>
                     <button className="btn py-2 px-3 border border-primary" onClick={() => setSidebarOpen(!sidebarOpen)}>
                         <FontAwesomeIcon className='text-light' icon={faBars} />
                     </button>

@@ -212,7 +212,7 @@ const GPALyticsDashboard = () => {
                             </div>
 
                             <div className='aiMobile d-md-none w-auto position-fixed bottom-0 end-0'>
-                                <button className='btn btn-primary p-2 px-3 m-4 rounded' onClick={() => setShowModal(true)} style={{fontSize: "1.3rem", fontWeight: "600"}}>
+                                <button className='btn btn-primary p-2 px-3 m-4 rounded' onClick={() => setShowModal(true)} style={{fontSize: "1.3rem", fontWeight: "600", zIndex: "9999"}}>
                                     🤖 AI Consultant
                                 </button>
                             </div>
