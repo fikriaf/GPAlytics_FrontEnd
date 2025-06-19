@@ -19,7 +19,7 @@ function Home() {
                         <span><FaChevronDown/></span>
                     </button>
 
-                    <div className="collapse navbar-collapse" id="navbarNav">
+                    <div className="collapse navbar-collapse pb-3" id="navbarNav">
                         <ul className="navbar-nav gap-2 my- my-md-0">
                             <li className="nav-item">
                                 <a className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2" href="#">
