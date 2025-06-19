@@ -14,8 +14,8 @@ function Home() {
             <img className='bg-image' src={bgImg} alt="" />
             <nav className="nav-home glossy-sweep mt-4 shadow navbar-expand-md navbar-light fixed-top shadow-sm px-3 py-2 rounded">
                 <div className="container-fluid">
-                    <button className="navbar-toggler w-100 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon me-4">Menu</span>
+                    <button className="d-md-none d-flex gap-4 align-items-center justify-content-center navbar-toggler w-100 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <p className="d-flex align-items-center navbar-toggler-icon p-0 m-0">Menu</p>
                         <span><FaChevronDown/></span>
                     </button>
 
