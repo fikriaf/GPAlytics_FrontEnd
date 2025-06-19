@@ -186,16 +186,16 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
                   <div className="row justify-content-center g-3">
                     {[
                       {
-                        icon: '💡',
-                        text: 'Analisis data akademik saya!',
-                      },
-                      {
                         icon: '📅',
                         text: 'Buatkan jadwal belajar 1 minggu',
                       },
                       {
                         icon: '🧠',
                         text: 'Jelaskan apa itu neural network?',
+                      },
+                      {
+                        icon: '💡',
+                        text: 'Analisis data akademik saya!',
                       },
                     ].map((item, i) => (
                       <div key={i} className="col-12 col-md-4">
