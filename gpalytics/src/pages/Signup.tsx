@@ -41,7 +41,7 @@ function Signup() {
             localStorage.setItem('user', JSON.stringify(res.data));
             setForm({ nama: '', email: '', password: '' });
             setTimeout(() => {
-                navigate('/login');
+                navigate('/dashboard');
             }, 2000);
         } catch (error: any) {
             const msg = error.response?.data?.message || 'Terjadi kesalahan saat menambahkan data';
