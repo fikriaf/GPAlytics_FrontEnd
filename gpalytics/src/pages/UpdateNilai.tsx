@@ -1,4 +1,3 @@
-import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles/UpdateMahasiswa.css'
 import Sidebar from '../components/Sidebar'

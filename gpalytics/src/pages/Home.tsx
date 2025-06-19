@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import bgImg from '../assets/bg.png';
 import './styles/Home.css'
 import { FaUserPlus, FaSignInAlt, FaChevronDown, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaAngleUp } from "react-icons/fa";
@@ -49,12 +50,12 @@ function Home() {
                         <p>Optimalkan Performa Akademik Anda dengan GPAlytics - Analisis, Prediksi, dan Rekomendasi Cerdas untuk Mencapai IPK Terbaik!</p>
                     </div>
                     <div className="button d-flex gap-5">
-                        <a href='/signup' className="btn-signup btn px-4 btn-primary shadow d-flex align-items-center gap-2">
+                        <Link to="/signup" className="btn-signup btn px-4 btn-primary shadow d-flex align-items-center gap-2">
                             <FaUserPlus /><span>Sign Up</span>
-                        </a>
-                        <a href='/login' className="btn px-4 btn-outline-primary shadow d-flex align-items-center gap-2">
+                        </Link>
+                        <Link to="/login" className="btn px-4 btn-outline-primary shadow d-flex align-items-center gap-2">
                             <FaSignInAlt /><span>Sign In</span>
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>
