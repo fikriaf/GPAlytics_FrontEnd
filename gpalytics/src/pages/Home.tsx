@@ -103,7 +103,7 @@ function Home() {
                                     Jl. Intelektual No. 21, Ciputat, Tangerang Selatan<br />
                                     Banten 15419, Indonesia
                                     </address>
-                                    <a href="#signup" className="btn btn-primary btn-sm rounded-pill mt-2">Gabung Sekarang</a>
+                                    <Link to="/signup" className="btn btn-primary btn-sm rounded-pill mt-2">Gabung Sekarang</Link>
                                 </div>
                                 <div className='col-md-4 mt-3'>
                                     <div className="d-flex flex-column gap-2 justify-center gap-6 text-xl">
