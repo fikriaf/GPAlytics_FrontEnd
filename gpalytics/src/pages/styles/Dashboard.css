@@ -1,0 +1,84 @@
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content-xl {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    padding: 1.5rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-close {
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+
+@media screen and (max-width: 768px) {
+    .bottomer {
+        margin-top: 3.7rem;
+    }
+
+    .aiDesktop {
+        display: none !important;
+    }
+
+    .aiMobile .btn {
+        position: relative;
+        overflow: hidden !important;
+        z-index: 0;
+    }
+
+    .aiMobile .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -150%;
+        width: 30%;
+        height: 100%;
+        background: linear-gradient(
+            120deg,
+            transparent,
+            #0d6dfd5e,
+            transparent
+        );
+        transform: skewX(-20deg);
+        animation: sweep-gloss 2.5s infinite ease-in-out;
+        animation-delay: 1.25s;
+        z-index: 1;
+    }
+
+
+    @keyframes sweep-gloss {
+        0% {
+            left: -75%;
+        }
+        50% {
+            left: 125%;
+        }
+        100% {
+            left: 125%;
+        }
+    }
+}

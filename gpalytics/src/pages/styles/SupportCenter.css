@@ -1,0 +1,24 @@
+.support-center {
+    font-family: Heebo;
+}
+
+.buttonMenu button {
+    border: 1px solid blue !important;
+}
+
+@media screen and (max-width: 768px) {
+    .bottomerss {
+        display: none !important;
+    }
+
+    .bottomerss-mobile {
+        display: block !important;
+        margin-top: 3.7rem;
+    }
+    
+    .bottomerss-mobile .card-header a:focus {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+}

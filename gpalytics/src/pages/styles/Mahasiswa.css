@@ -1,0 +1,88 @@
+.detailProfile div img {
+    width: 8rem;
+    height: 8rem;
+}
+
+.profile-card-container {
+    perspective: 1200px;
+    width: 100%;
+    margin: auto;
+    height: 20rem;
+}
+
+.profile-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+    transform-origin: center;
+}
+
+.profile-card-inner.flipped {
+    transform: rotateX(180deg);
+}
+
+.profile-card-front,
+.profile-card-back {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    padding: 20px;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.profile-card-front {
+    z-index: 2;
+}
+
+.profile-card-back {
+    transform: rotateX(180deg);
+}
+
+.transition-btn-action {
+    transform: translateX(10%);
+    animation: slideIn 0.5s forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(10%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .detailProfile {
+        display: grid !important;
+    }
+    .vr {
+        display: none !important;
+    }
+    .columnLeft {
+        display: flex !important;
+    }
+    .bottomer {
+        margin-top: 3.7rem;
+    }
+    .profile-card-container {
+        height: 25rem;
+    }
+    .induk-profile {
+        height: 25.5rem !important;
+    }
+    .detailProfile div img {
+        width: 8rem !important;
+        height: 8rem !important;
+    }
+    .labelPhoto {
+        top: 70% !important;
+        left: 7rem !important;
+    }
+}

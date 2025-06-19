@@ -1,0 +1,25 @@
+.global-loader-overlay {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.397);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.spinner {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 5px solid #fff;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

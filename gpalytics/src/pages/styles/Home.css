@@ -1,0 +1,188 @@
+.nav-home {
+    margin: 0 3rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 1rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.bg .nav-home a {
+    font-family: Heebo;
+    font-weight: 600;
+}
+
+.bg .nav-home a:hover {
+    color: white;
+}
+
+.bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.content {
+    height: 90%;
+    position: relative;
+    z-index: 1;
+    color: white;
+}
+
+.content .warp-text {
+    font-weight: 600;
+}
+
+
+.heading {
+    font-family: "Source Serif 4", serif;
+    font-size: 5rem;
+    font-weight: 800;
+}
+
+.text {
+    font-family: "Anek Telugu";
+}
+
+.btn-signup:hover {
+    color: #0d6efd !important;
+    background-color: white !important;
+    border: solid 1px #0d6efd;
+}
+
+.button-footer {
+    cursor: pointer;
+    width: 100%;
+    overflow: visible;
+    clip-path: polygon(
+        0% 0%,
+        22% 0%,
+        25% 50%,
+        22% 100%,
+        0% 100%
+    );
+    animation: none;
+}
+
+.button-footer:hover {
+    animation: revealPolygon 0.3s ease forwards;
+}
+
+.overlay-footer {
+    margin: 0 3rem;
+}
+@keyframes revealPolygon {
+    0% {
+        clip-path: polygon(
+        0% 0%,
+        22% 0%,
+        25% 50%,
+        22% 100%,
+        0% 100%
+        );
+    }
+    100% {
+        clip-path: polygon(
+        0% 0%,
+        100% 0%,
+        100% 50%,
+        100% 100%,
+        0% 100%
+        );
+    }
+}
+
+
+.footer-animated {
+    position: absolute;
+    left: 0;
+    bottom: 0%;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 0.5s ease-in-out 0.3s;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.footer-animated.show,
+.footer-animated.active {
+    opacity: 1;
+    clip-path: inset(0% 0 0 0);
+    visibility: visible;
+    pointer-events: auto;
+}
+
+
+@media screen and (max-width: 768px) {
+
+    .nav-home {
+        margin: 1rem 1.5rem !important;
+    }
+
+    .navbar-nav .nav-item {
+        width: 100%;
+    }
+
+    .navbar-nav .nav-link {
+        width: 100%;
+        text-align: left;
+        padding: 0.7rem;
+    }
+    .navbar-nav .btn {
+        width: 100%;
+    }
+    .navbar-toggler {
+        margin: 0;
+        padding: 0.5rem 0;
+    }
+    .navbar-toggler:focus,
+    .navbar-toggler:active {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .content {
+        height: 42rem !important;
+        padding: 0 1.3rem !important;
+    }
+    .content .text {
+        width: 100% !important;
+    }
+    .heading p {
+        font-size: 3rem;
+    }
+    
+    .overlay-footer {
+        margin: 0 1.5rem;
+    }
+    .button-footer {
+        cursor: pointer;
+        width: 100%;
+        overflow: visible;
+        clip-path: polygon(
+            0% 0%,
+            32% 0%,
+            40% 50%,
+            32% 100%,
+            0% 100%
+        );
+        animation: none;
+    }
+
+    .button-footer.active {
+        clip-path: polygon(
+            0% 0%,
+            100% 0%,
+            100% 50%,
+            100% 100%,
+            0% 100%
+        );
+    }
+}
+

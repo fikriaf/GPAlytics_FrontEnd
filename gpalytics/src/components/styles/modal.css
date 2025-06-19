@@ -1,0 +1,62 @@
+/* modal.css */
+.custom-fade {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+.custom-fade.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.text-neon {
+  color: #0ff;
+  text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+}
+.modal-footer textarea::placeholder {
+  color: rgb(150, 145, 145);
+}
+.custom-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #0ff;
+  border-radius: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #0ff;
+  box-shadow: 0 0 6px #0ff;
+}
+
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #0ff #111;
+}
+
+
+pre {
+  margin-bottom: 0 !important;
+}
+
+.chat-window p {
+  margin-bottom: 0.5rem;
+  white-space: pre-wrap;
+}
+
+
+.btn-prompt-intro:hover {
+  background-color: #6c757d !important;
+  transform: scale(1.05);
+}
+
+@media screen and (max-width: 768px) {
+  .prompt-intro {
+    margin: 2rem !important;
+  }
+}

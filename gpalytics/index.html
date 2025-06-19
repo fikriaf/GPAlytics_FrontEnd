@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPAlytics</title>
+    <style>
+      #global-loader {
+          position: fixed;
+          z-index: 9999;
+          inset: 0;
+          background-color: rgba(255, 255, 255, 0.819);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: opacity 0.3s ease;
+      }
+
+      .spinner {
+          width: 2rem;
+          height: 2rem;
+          border: 5px solid #a0a0a0;
+          border-top: 5px solid #3498db;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+          to {
+              transform: rotate(360deg);
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="global-loader">
+      <div class="spinner"></div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
