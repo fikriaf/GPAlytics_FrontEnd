@@ -229,7 +229,7 @@ const GPALyticsDashboard = () => {
                                         <li className="list-group-item">STATISTIKA DASAR - 3.5</li>
                                         <li className="list-group-item">BASIS DATA - 3.3</li>
                                     </ul>
-                                    <a href="#">Selengkapnya →</a>
+                                    <a className='text-decoration-none' href="#">Selengkapnya →</a>
                                 </div>
                             </div>
 
@@ -240,7 +240,7 @@ const GPALyticsDashboard = () => {
                                     <span className="badge bg-primary me-2">Sistem digital</span>
                                     <span className="badge bg-secondary">Psikologi</span>
                                     <br />
-                                    <a href="#">Selengkapnya →</a>
+                                    <a className='text-decoration-none' href="#">Selengkapnya →</a>
                                 </div>
                             </div>
                         </div>

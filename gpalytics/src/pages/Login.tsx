@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import bgImg from '../assets/bg.png';
 import googleImg from '../assets/google.png';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiEye, FiEyeOff, FiLogIn } from 'react-icons/fi';
 import './styles/Login.css';
 import { usePassword } from '../hooks/usePassword';
 import { useAnimateSignForm } from '../hooks/useAnimateSignForm';
@@ -128,7 +128,7 @@ function Login() {
                                     </label>
                                 </div>
                                 <button type="submit" className="btn btn-login btn-form shadow text-white w-100 mt-2">
-                                    Log In
+                                    <FiLogIn  /> Log In
                                 </button>
                             </form>
 

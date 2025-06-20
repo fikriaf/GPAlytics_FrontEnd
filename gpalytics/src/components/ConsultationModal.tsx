@@ -223,7 +223,7 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
                     }`}
                     style={{ maxWidth: '75%' }}
                   >
-                    <div className={`bg-primary d-flex justify-content-center text-light w-100 p-2 mb-1 ${msg.sender === 'User' ? 'd-none': 'd-block'}`}>{selectedLabel}</div>
+                    <div className={`bg-primary d-flex justify-content-center text-light w-100 p-2 mb-3 ${msg.sender === 'User' ? 'd-none': 'd-block'}`}>{selectedLabel}</div>
                     
                     <ReactMarkdown components={renderers}>{msg.text}</ReactMarkdown>
 

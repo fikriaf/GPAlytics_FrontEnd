@@ -43,7 +43,7 @@ html, body {
     transform: skewX(-20deg);
     animation: sweep-gloss 2.5s infinite ease-in-out;
     animation-delay: 0s;
-    z-index: 2;
+    z-index: -1;
 }
 
 .glossy-sweep::after {
@@ -62,7 +62,7 @@ html, body {
     transform: skewX(-20deg);
     animation: sweep-gloss 2.5s infinite ease-in-out;
     animation-delay: 1.25s;
-    z-index: 1;
+    z-index: -1;
 }
 
 @keyframes sweep-gloss {

@@ -1,16 +1,19 @@
 import { useState } from 'react';
+import ConsultationModal from '../components/ConsultationModal';
 import { Link } from 'react-router-dom';
 import bgImg from '../assets/bg.png';
 import './styles/Home.css'
 import { FaUserPlus, FaSignInAlt, FaChevronDown, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaAngleUp } from "react-icons/fa";
-import { FiInfo, FiPhone, FiFileText } from 'react-icons/fi';
+import { FiInfo, FiPhone, FiFileText, FiCpu } from 'react-icons/fi';
 
 function Home() {
+    const [showModal, setShowModal] = useState(false);
     const [showFooter, setShowFooter] = useState(false);
     const [active, setActive] = useState(false);
 
     return (
         <div className="bg">
+            <ConsultationModal show={showModal} onClose={() => setShowModal(false)} />
             <img className='bg-image' src={bgImg} alt="" />
             <nav className="nav-home glossy-sweep mt-4 shadow navbar-expand-md navbar-light fixed-top shadow-sm px-3 py-2 rounded">
                 <div className="container-fluid">
@@ -19,16 +22,21 @@ function Home() {
                         <span><FaChevronDown/></span>
                     </button>
 
-                    <div className="collapse navbar-collapse pb-3" id="navbarNav">
-                        <ul className="navbar-nav gap-2 my- my-md-0">
+                    <div className="collapse navbar-collapse p-md-2 pb-3" id="navbarNav">
+                        <ul className="navbar-nav gap-2 my-md-0">
                             <li className="nav-item">
                                 <a className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2" href="#">
-                                    <FiInfo size={20} />ABOUT
+                                    <FiInfo size={20} />About
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2" href="#">
-                                    <FiPhone size={20} /> CONTACT
+                                <Link to="/support-center" className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2">
+                                    <FiPhone size={20} /> Contact
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <a onClick={() => setShowModal(true)} className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2">
+                                    <FiCpu size={20} /> AI Chatbot
                                 </a>
                             </li>
                             <li className="nav-item">

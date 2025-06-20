@@ -4,7 +4,7 @@ import bgImg from '../assets/bg.png';
 import googleImg from '../assets/google.png';
 import './styles/Signup.css';
 import axios from 'axios'
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiEye, FiEyeOff, FiLogIn } from 'react-icons/fi';
 import { usePassword } from '../hooks/usePassword';
 import { useAnimateSignForm } from '../hooks/useAnimateSignForm';
 import { useAlert } from '../hooks/useAlert';
@@ -142,7 +142,7 @@ function Signup() {
                                         Saya menyetujui <a href="/kebijakan" className="text-decoration-none text-multicolor">Kebijakan</a> dan <a href="/privasi" className="text-decoration-none text-multicolor">Privasi</a>
                                     </label>
                                 </div>
-                                <button type="submit" className="btn btn-form w-100 mt-2 shadow text-light">Sign Up</button>
+                                <button type="submit" className="btn btn-form w-100 mt-2 shadow text-light"><FiLogIn /> Sign Up</button>
                             </form>
 
                             <div className='d-grid gap-3 align-items-center justify-content-center my-5 py-3'>

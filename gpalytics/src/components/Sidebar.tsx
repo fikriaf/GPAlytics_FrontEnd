@@ -4,7 +4,7 @@ import './styles/Sidebar.css'
 import LogoImg from '../assets/logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FiGrid, FiUser, FiEdit3, FiBarChart2, FiHelpCircle, FiLogOut } from 'react-icons/fi';
+import { FiGrid, FiUser, FiEdit3, FiBarChart2, FiHelpCircle, FiLogOut, FiLogIn } from 'react-icons/fi';
 import guestImg from '../assets/guest.png'
 
 interface SidebarProps {
@@ -93,14 +93,24 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <span className="badge bg-warning text-dark">User</span>
                     </div>
                 </div>
-                <a href="#" className="btn btn-outline-danger btn-sm mt-3 w-100"
-                onClick={() => {
-                    localStorage.clear()
-                    location.href = '/'
-                }}
-                >
-                    <FiLogOut size={20} /> Log out
-                </a>
+                {getProfile ? (
+                    <a href="#" className="btn btn-outline-danger btn-sm mt-3 w-100"
+                    onClick={() => {
+                        localStorage.clear()
+                        location.href = '/'
+                    }}
+                    >
+                        <FiLogOut size={20} /> Log out
+                    </a>
+                ) : (
+                    <a href="#" className="btn btn-outline-primary btn-sm mt-3 w-100"
+                    onClick={() => {
+                        location.href = '/signup'
+                    }}
+                    >
+                        <FiLogIn size={20} /> Sign Up
+                    </a>
+                )}
             </div>
         </div>
     );
