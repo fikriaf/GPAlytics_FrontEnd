@@ -114,7 +114,6 @@ const Mahasiswa = () => {
     };
 
 
-
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         axios.put(`${URL}/mahasiswa/${getProfile.email}`, updateProfile)
@@ -129,6 +128,7 @@ const Mahasiswa = () => {
     function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>, item: any) {
         if (e.target.checked) {
             setSelectedItems(prev => [...prev, item]);
+            console.log(selectedItems)
         } else {
             setSelectedItems(prev => prev.filter(i => i !== item));
         }
@@ -139,25 +139,106 @@ const Mahasiswa = () => {
         }
     },[doAction])
     
-    const [editItem, setEditItem] = useState({
-        id_mahasiswa: '',
-        mataKuliah: '',
-        nilaiTugas: 0,
-        nilaiUTS: 0,
-        nilaiUAS: 0
-    });
+    const [editItems, setEditItems] = useState<any[]>([]);
+
+    const initializedRef = useRef(false);
+
+    useEffect(() => {
+        if (!selectedItems || initializedRef.current) return;
+
+        const init = selectedItems.map((item: any) => ({
+            mataKuliah: item.mataKuliah,
+            semester: item.semester,
+            nilaiTugas: item.nilaiTugas,
+            nilaiTugasBaru: item.nilaiTugas,
+            nilaiUTS: item.nilaiUTS,
+            nilaiUTSBaru: item.nilaiUTS,
+            nilaiUAS: item.nilaiUAS,
+            nilaiUASBaru: item.nilaiUAS
+        }));
+
+        setEditItems(init);
+        initializedRef.current = true;
+    }, [selectedItems]);
 
 
-    function handleSubmitEdit(e: React.FormEvent) {
-        e.preventDefault();
+    const handleSubmitEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
+    try {
+        const updatedItems: any[] = [];
+
+        for (const item of editItems) {
+            const { semester } = item;
+
+            if (item.nilaiTugas !== item.nilaiTugasBaru && item.nilaiTugasBaru != null) {
+                await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/Tugas/${item.nilaiTugas}`, {
+                    nilai: item.nilaiTugasBaru
+                });
+                item.nilaiTugas = item.nilaiTugasBaru;
+            }
+
+            if (item.nilaiUTS !== item.nilaiUTSBaru && item.nilaiUTSBaru != null) {
+                await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UTS/${item.nilaiUTS}`, {
+                    nilai: item.nilaiUTSBaru
+                });
+                item.nilaiUTS = item.nilaiUTSBaru;
+            }
+
+            if (item.nilaiUAS !== item.nilaiUASBaru && item.nilaiUASBaru != null) {
+                await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UAS/${item.nilaiUAS}`, {
+                    nilai: item.nilaiUASBaru
+                });
+                item.nilaiUAS = item.nilaiUASBaru;
+            }
+
+            updatedItems.push(item);
+        }
+
+        // Perbarui nilai di tampilan
         setListNilai(prev =>
             prev?.map(item =>
-            item.mataKuliah === editItem.mataKuliah ? { ...item, ...editItem } : item
+                updatedItems.find(u => u.mataKuliah === item.mataKuliah && u.semester === item.semester) || item
             ) || null
         );
+
+        showSuccess("Simpan perubahan");
         localStorage.removeItem(`ipkData-${getProfile._id}`);
+    } catch (err) {
+        console.error("Gagal menyimpan:", err);
     }
+};
+
+    const handleSubmitDelete = async () => {
+        if (!getProfile || !selectedItems) return;
+
+        const deleteRequests = selectedItems.flatMap((item: any) => {
+            const requests: Promise<any>[] = [];
+
+            if (item.nilaiTugas) {
+                const target = `${URL}/nilai/${getProfile._id}/${item.semester}/Tugas/${item.nilaiTugas}`;
+                requests.push(axios.delete(target));
+            }
+            if (item.nilaiUTS) {
+                const target = `${URL}/nilai/${getProfile._id}/${item.semester}/UTS/${item.nilaiUTS}`;
+                requests.push(axios.delete(target));
+            }
+            if (item.nilaiUAS) {
+                const target = `${URL}/nilai/${getProfile._id}/${item.semester}/UAS/${item.nilaiUAS}`;
+                requests.push(axios.delete(target));
+            }
+
+            return requests;
+        });
+
+        try {
+            await Promise.all(deleteRequests);
+            showSuccess('Deleted!');
+        } catch (err) {
+            console.error('Gagal menghapus sebagian nilai:', err);
+        }
+    };
+
     return (
         <div className="mahasiswa container-fluid min-vh-100 bg-light">
             <div className="row">
@@ -170,6 +251,27 @@ const Mahasiswa = () => {
                         <FontAwesomeIcon className='text-light' icon={faBars} />
                     </button>
                 </div>
+                {/* Modal Delete */}
+                <div className="modal fade" id="deleteModal" tabIndex={-1} aria-labelledby="deleteModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                        <div className="modal-header d-flex align-items-center">
+                            <h5 className="modal-title" id="deleteModalLabel">Apakah kamu yakin mengapus data ini?</h5>
+                            <button type="button" className="btn m-0 p-0 border-none" data-bs-dismiss="modal" aria-label="Close"><AiOutlineClose size={20} /></button>
+                        </div>
+                        <div className="modal-body">
+                            <div>
+                                { selectedItems && (
+                                    selectedItems.map((item:any)=>(
+                                        <div className='border-bottom text-muted mb-1'>{item.mataKuliah} | sem {item.semester} | {item.sks} sks | ({item.nilaiTugas??'null'}:{item.nilaiUTS??'null'}:{item.nilaiUAS??'null'})</div>
+                                    ))
+                                )}
+                            </div>
+                            <button type="submit" className="btn btn-primary mt-3" onClick={handleSubmitDelete}>Delete</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
                 {/* Modal Edit */}
                 <div className="modal fade" id="editModal" tabIndex={-1} aria-labelledby="editModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
@@ -179,48 +281,84 @@ const Mahasiswa = () => {
                             <button type="button" className="btn m-0 p-0 border-none" data-bs-dismiss="modal" aria-label="Close"><AiOutlineClose size={20} /></button>
                         </div>
                         <div className="modal-body">
-                            {/* {editItem && ( */}
                             <form onSubmit={handleSubmitEdit}>
-                                <div style={{maxHeight: '25rem', overflowY: 'auto'}}>
-                                    { selectedItems && (
-                                        selectedItems.map((item:any, index:number) => (
-                                        <div className='border-bottom pb-1 mb-2'>
-                                            <div>
+                                <div style={{ maxHeight: '25rem', overflowY: 'auto' }}>
+                                    {selectedItems && selectedItems.length > 0 ? (
+                                        selectedItems.map((item: any, index: number) => (
+                                            <div key={index} className="border-bottom pb-1 mb-2">
                                                 <h5>{item.mataKuliah}</h5>
+                                                <div className="d-flex gap-2">
+                                                    <div className="mb-3">
+                                                        <label className="form-label">Tugas</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={
+                                                                editItems[index]?.nilaiTugasBaru !== undefined
+                                                                    ? editItems[index].nilaiTugasBaru
+                                                                    : item.nilaiTugas
+                                                            }
+                                                            onChange={(e) => {
+                                                                const updated = [...editItems];
+                                                                updated[index] = {
+                                                                    ...(updated[index] || item),
+                                                                    nilaiTugasBaru: Number(e.target.value)
+                                                                };
+                                                                setEditItems(updated);
+                                                            }}
+                                                        />
+                                                    </div>
+
+                                                    <div className="mb-3">
+                                                        <label className="form-label">UTS</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={
+                                                                editItems[index]?.nilaiUTSBaru !== undefined
+                                                                    ? editItems[index].nilaiUTSBaru
+                                                                    : item.nilaiUTS
+                                                            }
+                                                            onChange={(e) => {
+                                                                const updated = [...editItems];
+                                                                updated[index] = {
+                                                                    ...(updated[index] || item),
+                                                                    nilaiUTSBaru: Number(e.target.value)
+                                                                };
+                                                                setEditItems(updated);
+                                                            }}
+                                                        />
+                                                    </div>
+
+                                                    <div className="mb-3">
+                                                        <label className="form-label">UAS</label>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            value={
+                                                                editItems[index]?.nilaiUASBaru !== undefined
+                                                                    ? editItems[index].nilaiUASBaru
+                                                                    : item.nilaiUAS
+                                                            }
+                                                            onChange={(e) => {
+                                                                const updated = [...editItems];
+                                                                updated[index] = {
+                                                                    ...(updated[index] || item),
+                                                                    nilaiUASBaru: Number(e.target.value)
+                                                                };
+                                                                setEditItems(updated);
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className='d-flex'>
-                                                <div className="mb-3">
-                                                    <label className="form-label">Tugas</label>
-                                                    <input type="number" className="form-control" 
-                                                        value={item.nilaiTugas}
-                                                        onChange={(e) => setEditItem({ ...editItem, nilaiTugas: Number(e.target.value) })} 
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label className="form-label">UTS</label>
-                                                    <input type="number" className="form-control" 
-                                                        value={item.nilaiUTS}
-                                                        onChange={(e) => setEditItem({ ...editItem, nilaiUTS: Number(e.target.value) })} 
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label className="form-label">UAS</label>
-                                                    <input type="number" className="form-control" 
-                                                        value={item.nilaiUAS}
-                                                        onChange={(e) => setEditItem({ ...editItem, nilaiUAS: Number(e.target.value) })} 
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
                                         ))
-                                    )}
-                                    {selectedItems.length === 0 && (
-                                        <div>Please, select first !</div>
+                                    ) : (
+                                        <div>Please, select first!</div>
                                     )}
                                 </div>
                                 <button type="submit" className="btn btn-primary">Simpan</button>
                             </form>
-                            {/* )} */}
                         </div>
                         </div>
                     </div>
@@ -514,7 +652,7 @@ const Mahasiswa = () => {
                                 </span>
                                 <input
                                     type="text"
-                                    className="form-control border-start-0"
+                                    className="form-control search border-start-0"
                                     style={{ fontFamily: 'Segoe UI, sans-serif', fontSize: '0.9rem' }}
                                     placeholder="Cari mata kuliah..."
                                     value={searchKeyword}
@@ -548,6 +686,7 @@ const Mahasiswa = () => {
                                                 transform: 'translateX(0)',
                                             }}
                                         >
+                                            <button className='btn btn-outline-danger me-1' data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
                                             <button className='btn btn-outline-primary me-1' data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
                                             <button className='btn btn-outline-success me-1' data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah</button>
                                         </div>
