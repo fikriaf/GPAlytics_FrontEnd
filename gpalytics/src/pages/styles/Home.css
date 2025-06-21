@@ -75,6 +75,7 @@
 .overlay-footer {
     margin: 0 3rem;
 }
+
 @keyframes revealPolygon {
     0% {
         clip-path: polygon(
@@ -104,6 +105,8 @@
     width: 100%;
     opacity: 0;
     visibility: hidden;
+    overflow: hidden;
+    contain: paint;
     clip-path: inset(100% 0 0 0);
     transition: clip-path 0.5s ease-in-out 0.3s;
     pointer-events: none;

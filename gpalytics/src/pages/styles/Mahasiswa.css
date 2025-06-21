@@ -49,6 +49,14 @@
     animation: slideIn 0.5s forwards;
 }
 
+thead th {
+  position: sticky;
+  top: 0;
+  background: #0d6efd;
+  color: white;
+  z-index: 1;
+}
+
 @keyframes slideIn {
     from {
         transform: translateX(10%);

@@ -1,5 +1,9 @@
 import axios from 'axios';
+import { useProfile } from '../hooks/useProfile';
 import { useIPKData } from '../hooks/useIPK';
+import { getListNilaiTertinggi } from '../services/Nilai';
+import type { NilaiMatkulDenganAkhir } from '../services/Nilai';
+import { useBobotMutu } from '../hooks/useBobot';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/Dashboard.css'
 import Sidebar from '../components/Sidebar';
@@ -13,9 +17,12 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 const URL = `${import.meta.env.VITE_URL_HOST}/api`;
 
 const GPALyticsDashboard = () => {
+    const { getProfile } = useProfile();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [Allmatkul, setALLmatkul] = useState<any>([]);
+    const [listNilai, setListNilai] = useState<NilaiMatkulDenganAkhir[] | null>(null);
+    const getBobotMutu = useBobotMutu();
     const {
         isLoading,
         ipkTerakhir,
@@ -36,7 +43,16 @@ const GPALyticsDashboard = () => {
         .then(res => setALLmatkul(res.data))
         .catch(err => console.log(err))
     },[])
-
+    
+    useEffect(() => {
+        const fetchNilai = async () => {
+            if (!getProfile?._id) return;
+            const data = await getListNilaiTertinggi(getProfile?._id);
+            setListNilai(data ?? null);
+        };
+        fetchNilai();
+    }, [getProfile?._id]);
+    
     return (
         <>
             <div className="dashboard container-fluid min-vh-100 bg-light">
@@ -223,11 +239,20 @@ const GPALyticsDashboard = () => {
                             <div className="col-md-4">
                                 <div className="bg-white h-100 p-3 rounded shadow-sm">
                                     <h6>Mata kuliah Dengan Nilai Tertinggi</h6>
-                                    <ul className="list-group">
-                                        <li className="list-group-item">KOMPUTASI BERBASIS WEB - 4</li>
-                                        <li className="list-group-item">SOFTWARE ENGINEERING - 3.7</li>
-                                        <li className="list-group-item">STATISTIKA DASAR - 3.5</li>
-                                        <li className="list-group-item">BASIS DATA - 3.3</li>
+                                    <ul className="list-group" style={{maxHeight: '10rem', overflowY: 'auto'}}>
+                                        { listNilai ? (
+                                            listNilai.map((item:any)=>(
+                                                <li className="list-group-item d-flex align-items-center justify-content-between">
+                                                    <div>{item.mataKuliah} [{item.nilaiAkhir}]</div>
+                                                    <div>{getBobotMutu(item.nilaiAkhir)}</div>
+                                                </li>
+                                            ))
+                                        ) : (
+                                                <li className="list-group-item d-flex align-items-center justify-content-between">
+                                                    <div>Belum ada data nilai</div>
+                                                    <div>_._</div>
+                                                </li>
+                                        )}
                                     </ul>
                                     <a className='text-decoration-none' href="#">Selengkapnya →</a>
                                 </div>

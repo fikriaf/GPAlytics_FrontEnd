@@ -564,8 +564,8 @@ const Mahasiswa = () => {
                             </div>
                             
                         </div>
-                        <div className="table-responsive">
-                            <table className="table table-bordered text-center table-striped table-hover shadow-sm rounded-3 overflow-hidden">
+                        <div className="table-responsive" style={{maxHeight: '15rem', overflowY: 'auto'}}>
+                            <table className="table fixed-header-table table-bordered text-center table-striped table-hover shadow-sm rounded-3">
                                 <thead className="text-white" style={{
                                     background: 'linear-gradient(90deg, #0d6efd 0%, #0dcaf0 100%)'
                                 }}>

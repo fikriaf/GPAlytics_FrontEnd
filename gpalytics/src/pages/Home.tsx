@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import bgImg from '../assets/bg.png';
 import './styles/Home.css'
 import { FaUserPlus, FaSignInAlt, FaChevronDown, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaAngleUp } from "react-icons/fa";
-import { FiInfo, FiPhone, FiFileText, FiCpu } from 'react-icons/fi';
+import { FiInfo, FiPhone, FiFileText, FiCpu, FiArrowRight, FiChevronRight } from 'react-icons/fi';
 
 function Home() {
     const [showModal, setShowModal] = useState(false);
@@ -15,32 +15,32 @@ function Home() {
         <div className="bg">
             <ConsultationModal show={showModal} onClose={() => setShowModal(false)} />
             <img className='bg-image' src={bgImg} alt="" />
-            <nav className="nav-home glossy-sweep mt-4 shadow navbar-expand-md navbar-light fixed-top shadow-sm px-3 py-2 rounded">
-                <div className="container-fluid">
+            <nav className="nav-home glossy-sweep mt-4 shadow navbar-expand-md navbar-light fixed-top shadow-sm px-md-3 py-md-2 rounded">
+                <div className="container-fluid px-md-3 px-0">
                     <button className="d-md-none d-flex gap-4 align-items-center justify-content-center navbar-toggler w-100 text-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <p className="d-flex align-items-center navbar-toggler-icon p-0 m-0">Menu</p>
                         <span><FaChevronDown/></span>
                     </button>
 
-                    <div className="collapse navbar-collapse p-md-2 pb-3" id="navbarNav">
+                    <div className="collapse navbar-collapse p-md-2" id="navbarNav">
                         <ul className="navbar-nav gap-2 my-md-0">
                             <li className="nav-item">
-                                <a className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2" href="#">
-                                    <FiInfo size={20} />About
+                                <a className="nav-link btn btn-outline-primary px-3 d-flex align-items-center justify-content-between" href="#">
+                                    <span className='d-flex align-items-center gap-2'><FiInfo size={20} />About</span><FiChevronRight className='d-md-none' size={20} />
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <Link to="/support-center" className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2">
-                                    <FiPhone size={20} /> Contact
+                                <Link to="/support-center" className="nav-link btn btn-outline-primary px-3 d-flex align-items-center justify-content-between">
+                                    <span className='d-flex align-items-center gap-2'><FiPhone size={20} /> Contact</span><FiChevronRight className='d-md-none' size={20} />
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <a onClick={() => setShowModal(true)} className="nav-link btn btn-outline-primary px-3 d-flex align-items-center gap-2">
-                                    <FiCpu size={20} /> AI Chatbot
+                                <a onClick={() => setShowModal(true)} className="nav-link btn btn-outline-primary px-3 d-flex align-items-center justify-content-between">
+                                    <span className='d-flex align-items-center gap-2'><FiCpu size={20} /> AI Chatbot</span><FiChevronRight className='d-md-none' size={20} />
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="btn btn-outline-primary d-flex align-items-center gap-2" href="#">
+                                <a className="px-3 btn btn-outline-primary rounded-md py-md-2 py-3 rounded-md-1 d-flex align-items-center gap-2" href="#">
                                     <FiFileText size={20} /> DOCUMENTS
                                 </a>
                             </li>
@@ -73,7 +73,7 @@ function Home() {
                 onMouseLeave={() => {setShowFooter(false); setActive(false)}}
             >
                 <button className={`btn btn-dark d-flex align-items-center justify-content-between
-                button-footer glossy-sweep shadow navbar-expand-md bg-dark shadow-sm px-3 py-3 rounded
+                button-footer glossy-sweep shadow navbar-expand-md bg-dark shadow-sm px-3 py-2 rounded
                 ${active ? "active" : ""}`}
                 onClick={() => setActive((prev) => !prev)}
                 >
@@ -89,6 +89,7 @@ function Home() {
                                 <p className="small">
                                 Platform cerdas untuk menganalisis dan memprediksi performa akademik Anda, membantu mencapai IPK terbaik.
                                 </p>
+                                <hr />
                             </div>
 
                             <div className='col-md-8 row'>
@@ -113,7 +114,7 @@ function Home() {
                                     </address>
                                     <Link to="/signup" className="btn btn-primary btn-sm rounded-pill mt-2">Gabung Sekarang</Link>
                                 </div>
-                                <div className='col-md-4 mt-3'>
+                                <div className='col-md-4 mt-3 mb-2'>
                                     <div className="d-flex flex-column gap-2 justify-center gap-6 text-xl">
                                         <a href="https://facebook.com" className='d-flex gap-1 align-items-center' target="_blank" rel="noopener noreferrer">
                                             <FaFacebook size={35} className="hover:text-blue-500 transition" />
