@@ -1,15 +1,22 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles/StatistikAkademik.css'
+import { useState, useEffect } from 'react';
+import { useProfile } from '../hooks/useProfile';
 import Sidebar from '../components/Sidebar'
-import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FiBarChart2 } from 'react-icons/fi';
-
-
 import {
     BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
+
+import {
+  getDistribusiNilai,
+  getIPSPerSemester,
+  getIPKPredictionData,
+  getRegresiDataLinear,
+  getTugasUTSUASData
+} from '../services/statistikAkademik';
 
 const distribusiNilai = [
   { range: '90 - 100', jumlah: 4 },
@@ -60,8 +67,52 @@ const data = [
     { semester: 8, tugas: 89, uts: 80, uas: 95 },
 ];
 
+type DistribusiItem = { range: string; jumlah: number };
+type IPSItem = { semester: string; ip: number };
+type IPKPrediksiItem = { semester: string; ipk: number };
+type RegresiItem = { semester: number; nilai: number; prediksi?: number };
+type NilaiRataItem = { semester: number; tugas: number; uts: number; uas: number };
+
 const StatistikAkademik = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const { getProfile } = useProfile();
+
+    const [distribusi, setDistribusi] = useState<DistribusiItem[]>([]);
+    const [ips, setIPS] = useState<IPSItem[]>([]);
+    const [ipkPrediksi, setIpkPrediksi] = useState<IPKPrediksiItem[]>([]);
+    const [tugasUtsUas, setTugasUtsUas] = useState<NilaiRataItem[]>([]);
+
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user') ?? '{}');
+      const id_mahasiswa = user?._id;
+
+      if (!id_mahasiswa) return;
+
+      async function fetchData() {
+        setDistribusi(await getDistribusiNilai(id_mahasiswa));
+        setIPS(await getIPSPerSemester(id_mahasiswa));
+        setIpkPrediksi(await getIPKPredictionData(id_mahasiswa));
+        setTugasUtsUas(await getTugasUTSUASData(id_mahasiswa));
+      }
+
+      fetchData();
+    }, []);
+
+    const [regresi, setRegresi] = useState<{ semester: number; nilai: number | null; prediksi: number; }[]>([]);
+    const [persamaan, setPersamaan] = useState<string>('');
+
+    useEffect(() => {
+      const user = JSON.parse(localStorage.getItem('user') ?? '{}');
+      const id_mahasiswa = user?._id;
+
+      if (!id_mahasiswa) return;
+      async function fetchData() {
+        const hasil = await getRegresiDataLinear(id_mahasiswa);
+        setRegresi(hasil.data);
+        setPersamaan(hasil.persamaan);
+      }
+      fetchData();
+    }, []);
 
     return (
         <div className="statistik-akademik container-fluid min-vh-100 bg-light">
@@ -105,10 +156,12 @@ const StatistikAkademik = () => {
                           </div>
                       </div>
                     </div>
+
+
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
                         <h5 className="fw-semibold mb-3">Semua Nilai</h5>
                         <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={data}>
+                        <LineChart data={tugasUtsUas}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
                             <YAxis domain={[0, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
@@ -120,100 +173,105 @@ const StatistikAkademik = () => {
                         </LineChart>
                         </ResponsiveContainer>
                     </div>
-<div className="bg-white rounded shadow-sm p-4 mb-2">
-  <h5 className="fw-semibold mb-3">Distribusi Nilai Mahasiswa</h5>
-  <ResponsiveContainer width="100%" height={250}>
-    <BarChart data={distribusiNilai}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="range" label={{ value: "Range", position: "insideBottom", offset: -5 }} />
-      <YAxis label={{ value: "Jumlah", angle: -90, position: "insideLeft" }} />
-      <Tooltip />
-      <Bar dataKey="jumlah" fill="#0d6efd" radius={[4, 4, 0, 0]} />
-    </BarChart>
-  </ResponsiveContainer>
-</div>
 
-<div className="bg-white rounded shadow-sm p-4 mb-2">
-  <h5 className="fw-semibold mb-3">Indeks Prestasi per Semester</h5>
-  <ResponsiveContainer width="100%" height={250}>
-    <LineChart data={ipSemester}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-      <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
-      <Tooltip />
-      <Line type="monotone" dataKey="ip" stroke="#ffc107" strokeWidth={3} dot={{ r: 5 }} />
-    </LineChart>
-  </ResponsiveContainer>
-</div>
-<div className="bg-white rounded shadow-sm p-4 mb-2">
-  <h5 className="fw-semibold mb-3">Prediksi IPK Akhir</h5>
 
-  {/* Kontrol prediksi */}
-  <div className="row g-3 mb-2">
-    <div className="col-md-4">
-      <label className="form-label fw-semibold">Semester Saat Ini</label>
-      <select className="form-select">
-        {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
-          <option key={s}>Semester {s}</option>
-        ))}
-      </select>
-    </div>
-    <div className="col-md-4">
-      <label className="form-label fw-semibold">Target Nilai Tiap Matkul</label>
-      <select className="form-select">
-        <option value="A">A (90-100)</option>
-        <option value="B+">B+ (80-89)</option>
-        <option value="B">B (70-79)</option>
-      </select>
-    </div>
-    <div className="col-md-4">
-      <label className="form-label fw-semibold">Bobot SKS Tersisa</label>
-      <input type="number" className="form-control" defaultValue={60} />
-    </div>
-  </div>
+                    <div className="bg-white rounded shadow-sm p-4 mb-2">
+                      <h5 className="fw-semibold mb-3">Distribusi Nilai Mahasiswa</h5>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={distribusi}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="range" label={{ value: "Range", position: "insideBottom", offset: -5 }} />
+                          <YAxis label={{ value: "Jumlah", angle: -90, position: "insideLeft" }} />
+                          <Tooltip />
+                          <Bar dataKey="jumlah" fill="#0d6efd" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
 
-  {/* Hasil prediksi */}
-  <div className="alert alert-info d-flex justify-content-between align-items-center">
-    <div>
-      Dengan skenario ini, <strong>prediksi IPK akhir kamu</strong> adalah:
-    </div>
-    <h3 className="fw-bold text-primary m-0">3.64</h3>
-  </div>
 
-  {/* Grafik prediksi */}
-  <ResponsiveContainer width="100%" height={250}>
-    <LineChart data={prediksiIpkData}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-      <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
-      <Tooltip />
-      <Line type="monotone" dataKey="ipk" stroke="#20c997" strokeWidth={3} />
-    </LineChart>
-  </ResponsiveContainer>
-</div>
+                    <div className="bg-white rounded shadow-sm p-4 mb-2">
+                      <h5 className="fw-semibold mb-3">Indeks Prestasi per Semester</h5>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <LineChart data={ips}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+                          <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
+                          <Tooltip />
+                          <Line type="monotone" dataKey="ip" stroke="#ffc107" strokeWidth={3} dot={{ r: 5 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
 
-<div className="bg-white rounded shadow-sm p-4 mb-2">
-  <h5 className="fw-semibold mb-3">Regresi Linier: Prediksi Nilai Akhir per Semester</h5>
 
-  <ResponsiveContainer width="100%" height={250}>
-    <LineChart data={regresiData}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-      <YAxis domain={[0, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
-      <Tooltip />
-      <Legend />
-      <Line type="monotone" dataKey="nilai" stroke="#0d6efd" strokeWidth={3} name="Nilai Akhir" />
-      <Line type="monotone" dataKey="prediksi" stroke="#ffc107" strokeWidth={3} strokeDasharray="5 5" name="Regresi" />
-    </LineChart>
-  </ResponsiveContainer>
+                    <div className="bg-white rounded shadow-sm p-4 mb-2">
+                      <h5 className="fw-semibold mb-3">Prediksi IPK Akhir</h5>
 
-  <div className="mt-3 text-muted small">
-    Persamaan regresi: <code>y = 2.87x + 74.3</code> <br />
-    Nilai R²: <strong>0.89</strong> → tren meningkat cukup kuat
-  </div>
-</div>
+                      {/* Kontrol prediksi */}
+                      <div className="row g-3 mb-2">
+                        <div className="col-md-4">
+                          <label className="form-label fw-semibold">Semester Saat Ini</label>
+                          <select className="form-select">
+                            {ipkPrediksi.map((s) => (
+                              <option key={s.semester} value={s.semester}>
+                                Semester {s.semester}
+                              </option>
+                            ))}
+                          </select>
 
-                    
+                        </div>
+                        <div className="col-md-4">
+                          <label className="form-label fw-semibold">Target Nilai Tiap Matkul</label>
+                          <select className="form-select">
+                            <option value="A">A (90-100)</option>
+                            <option value="B+">B+ (80-89)</option>
+                            <option value="B">B (70-79)</option>
+                          </select>
+                        </div>
+                        <div className="col-md-4">
+                          <label className="form-label fw-semibold">Bobot SKS Tersisa</label>
+                          <input type="number" className="form-control" defaultValue={60} />
+                        </div>
+                      </div>
+
+                      {/* Hasil prediksi */}
+                      <div className="alert alert-info d-flex justify-content-between align-items-center">
+                        <div>
+                          Dengan skenario ini, <strong>prediksi IPK akhir kamu</strong> adalah:
+                        </div>
+                        <h3 className="fw-bold text-primary m-0">3.64</h3>
+                      </div>
+
+                      {/* Grafik prediksi */}
+                      <ResponsiveContainer width="100%" height={250}>
+                        <LineChart data={ipkPrediksi}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+                          <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
+                          <Tooltip />
+                          <Line type="monotone" dataKey="ipk" stroke="#20c997" strokeWidth={3} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    <div className="bg-white rounded shadow-sm p-4 mb-2">
+                      <h5 className="fw-semibold mb-3">Regresi Linier: Prediksi Nilai Akhir per Semester</h5>
+
+                      <ResponsiveContainer width="100%" height={250}>
+                        <LineChart data={regresi}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+                          <YAxis domain={[50, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
+                          <Tooltip />
+                          <Legend />
+                          <Line type="monotone" dataKey="nilai" stroke="#0d6efd" strokeWidth={3} name="Nilai Akhir" />
+                          <Line type="monotone" dataKey="prediksi" stroke="#ffc107" strokeWidth={3} strokeDasharray="5 5" name="Regresi" />
+                        </LineChart>
+                      </ResponsiveContainer>
+
+                      <div className="mt-3 text-muted small">
+                        Persamaan regresi: <code>{persamaan}</code> <br />
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>
