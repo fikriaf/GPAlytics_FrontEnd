@@ -40,6 +40,27 @@ export async function getListNilaiTertinggi(id_mahasiswa: string): Promise<Nilai
     }
 }
 
+export interface NilaiMatkulDenganId {
+    idNilai: string[];
+    mataKuliah: string;
+    sks: number;
+    semester: number;
+    nilaiTugas?: number;
+    nilaiUTS?: number;
+    nilaiUAS?: number;
+}
+
+export async function getListNilai(id_mahasiswa: string): Promise<NilaiMatkulDenganId[]> {
+    try {
+        const res = await axios.get<NilaiMatkulDenganId[]>(`${URL}/all?id_mahasiswa=${id_mahasiswa}`);
+        return res.data;
+    } catch (err) {
+        console.error('Gagal mengambil daftar nilai:', err);
+        return [];
+    }
+}
+
+
 export interface DataNilaiInput {
     id_mahasiswa: string;
     id_mk: string;

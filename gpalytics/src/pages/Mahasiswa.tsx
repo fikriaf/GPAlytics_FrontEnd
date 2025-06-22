@@ -3,7 +3,8 @@ import './styles/Mahasiswa.css'
 import Sidebar from '../components/Sidebar'
 import axios from 'axios';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { createDataNilai, getListNilaiTertinggi, getTotalSKS } from '../services/Nilai';
+import { createDataNilai, getListNilaiTertinggi, getListNilai, getTotalSKS } from '../services/Nilai';
+import type { NilaiMatkulDenganId } from  '../services/Nilai';
 import type { NilaiMatkulDenganAkhir } from '../services/Nilai';
 import { useIPKData } from '../hooks/useIPK';
 import { mataKuliah } from '../services/mataKuliah';
@@ -30,6 +31,7 @@ const Mahasiswa = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const { alert, showSuccess, showError } = useAlert(2000);
     const [listNilai, setListNilai] = useState<NilaiMatkulDenganAkhir[] | null>(null);
+    const [listNilaiId, setListNilaiId] = useState<NilaiMatkulDenganId[] | null>(null);
     const [nilaiTertinggi, setNilaiTertinggi] = useState<any>(null);
     const [doAction, setDoAction] = useState(false)
     const [listMatkul, setListMatkul] = useState<any[] | null> (null);
@@ -40,7 +42,9 @@ const Mahasiswa = () => {
     const freshNilai = useCallback(async () => {
         if (!getProfile?._id) return;
         const data = await getListNilaiTertinggi(getProfile._id);
+        const data_id = await getListNilai(getProfile._id)
         setListNilai(data ?? null);
+        setListNilaiId(data_id ?? null);
         setNilaiTertinggi(data?.[0] || null);
     }, [getProfile?._id]);
 
@@ -149,6 +153,7 @@ const Mahasiswa = () => {
         if (!selectedItems || initializedRef.current) return;
 
         const init = selectedItems.map((item: any) => ({
+            idNilai: item.idNilai,
             mataKuliah: item.mataKuliah,
             semester: item.semester,
             nilaiTugas: item.nilaiTugas,
@@ -162,8 +167,6 @@ const Mahasiswa = () => {
         setEditItems(init);
         initializedRef.current = true;
     }, [selectedItems]);
-
-
     const handleSubmitEdit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -171,24 +174,27 @@ const Mahasiswa = () => {
             const updatedItems: any[] = [];
 
             for (const item of editItems) {
-                const { semester } = item;
+                const { idNilai, semester } = item;
 
                 if (item.nilaiTugas !== item.nilaiTugasBaru && item.nilaiTugasBaru != null) {
-                    await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/Tugas/${item.nilaiTugas}`, {
+                    await axios.put(`${URL}/nilai`, {
+                        id_nilai: idNilai,
                         nilai: item.nilaiTugasBaru
                     });
                     item.nilaiTugas = item.nilaiTugasBaru;
                 }
 
                 if (item.nilaiUTS !== item.nilaiUTSBaru && item.nilaiUTSBaru != null) {
-                    await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UTS/${item.nilaiUTS}`, {
+                    await axios.put(`${URL}/nilai`, {
+                        id_nilai: idNilai,
                         nilai: item.nilaiUTSBaru
                     });
                     item.nilaiUTS = item.nilaiUTSBaru;
                 }
 
                 if (item.nilaiUAS !== item.nilaiUASBaru && item.nilaiUASBaru != null) {
-                    await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UAS/${item.nilaiUAS}`, {
+                    await axios.put(`${URL}/nilai`, {
+                        id_nilai: idNilai,
                         nilai: item.nilaiUASBaru
                     });
                     item.nilaiUAS = item.nilaiUASBaru;
@@ -197,8 +203,7 @@ const Mahasiswa = () => {
                 updatedItems.push(item);
             }
 
-            // Perbarui nilai di tampilan
-            setListNilai(prev =>
+            setListNilaiId(prev =>
                 prev?.map(item =>
                     updatedItems.find(u => u.mataKuliah === item.mataKuliah && u.semester === item.semester) || item
                 ) || null
@@ -206,47 +211,29 @@ const Mahasiswa = () => {
 
             showSuccess("Simpan perubahan");
             localStorage.removeItem(`ipkData-${getProfile._id}`);
+            setSelectedItems([]);
         } catch (err) {
             console.error("Gagal menyimpan:", err);
         }
     };
 
+
     const handleSubmitDelete = async () => {
         if (!getProfile || !selectedItems) return;
 
         const deleteRequests = selectedItems.flatMap((item: any) => {
-            const requests: Promise<any>[] = [];
-
-            if (item.nilaiTugas) {
-                const target = `${URL}/nilai/${getProfile._id}/${item.semester}/Tugas/${item.nilaiTugas}`;
-                requests.push(axios.delete(target, {
-                data: { nama_mk: item.mataKuliah }
-            }));
-            }
-            if (item.nilaiUTS) {
-                const target = `${URL}/nilai/${getProfile._id}/${item.semester}/UTS/${item.nilaiUTS}`;
-                requests.push(axios.delete(target, {
-                data: { nama_mk: item.mataKuliah }
-            }));
-            }
-            if (item.nilaiUAS) {
-                const target = `${URL}/nilai/${getProfile._id}/${item.semester}/UAS/${item.nilaiUAS}`;
-                requests.push(axios.delete(target, {
-                data: { nama_mk: item.mataKuliah }
-            }));
-            }
-
-            return requests;
+            return item.idNilai.map((id: string) => {
+                const target = `${URL}/nilai`;
+                return axios.delete(target, {
+                    data: { id_nilai: id }
+                });
+            });
         });
 
-        try {
-            await Promise.all(deleteRequests);
-            showSuccess('Deleted!');
-            localStorage.removeItem(`ipkData-${getProfile._id}`);
-            freshNilai();
-        } catch (err) {
-            console.error('Gagal menghapus sebagian nilai:', err);
-        }
+        await Promise.all(deleteRequests);
+        showSuccess('Deleted!');
+        localStorage.removeItem(`ipkData-${getProfile._id}`);
+        freshNilai();
     };
     
     const [totalSKSSemesterIni, setTotalSKSSemesterIni] = useState<number>(0);
@@ -726,7 +713,7 @@ const Mahasiswa = () => {
                                 >
                                     Semua
                                 </button>
-                                {[...new Set((listNilai ?? []).map((item) => item.semester))].sort().map((sem) => (
+                                {[...new Set((listNilaiId ?? []).map((item) => item.semester))].sort().map((sem) => (
                                     <button
                                     key={sem}
                                     className={`btn btn-sm ${semesterFilter === sem ? 'btn-primary' : 'btn-outline-primary'}`}
@@ -783,8 +770,8 @@ const Mahasiswa = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listNilai && (
-                                        listNilai
+                                    {listNilaiId && (
+                                        listNilaiId
                                             .filter((item) =>
                                             (semesterFilter === 'all' || item.semester === semesterFilter) &&
                                             item.mataKuliah.toLowerCase().includes(searchKeyword.toLowerCase())
