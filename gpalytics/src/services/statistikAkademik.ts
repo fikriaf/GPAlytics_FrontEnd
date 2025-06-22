@@ -35,18 +35,20 @@ export async function getIPSPerSemester(id_mahasiswa: string) {
     }));
 }
 export async function getIPKPredictionData(id_mahasiswa: string) {
-  const { semesterSaatIni } = await getTotalSKS(id_mahasiswa);
-  const all = await IPK.getAll(id_mahasiswa);
-  const data = all
-    .filter((v) => v.ipk !== null && v.semester <= semesterSaatIni);
+  const data = await IPK.getAll(id_mahasiswa);
 
-  if (data.length === 0) return [];
+  const filtered = data
+    .filter((v) => v.ipk !== null)
+    .sort((a, b) => a.semester - b.semester); // <-- penting!
 
+  if (filtered.length === 0) return [];
+
+  const lastKnown = filtered[filtered.length - 1];
   const deltaList: number[] = [];
 
-  for (let i = 1; i < data.length; i++) {
-    const prev = data[i - 1].ipk ?? 0;
-    const curr = data[i].ipk ?? 0;
+  for (let i = 1; i < filtered.length; i++) {
+    const prev = filtered[i - 1].ipk ?? 0;
+    const curr = filtered[i].ipk ?? 0;
     deltaList.push(curr - prev);
   }
 
@@ -55,20 +57,22 @@ export async function getIPKPredictionData(id_mahasiswa: string) {
       ? deltaList.reduce((a, b) => a + b, 0) / deltaList.length
       : 0;
 
-  const prediksiData = data.map((v) => ({
+  const prediksiData = filtered.map((v) => ({
     semester: v.semester.toString(),
     ipk: v.ipk ?? 0,
   }));
 
-  let lastIPK = data.length > 0 ? data[data.length - 1].ipk ?? 0 : 0;
+  let lastIPK = lastKnown.ipk ?? 0;
+  const lastSemester = lastKnown.semester;
 
-  for (let i = data.length + 1; i <= 8; i++) {
+  for (let i = lastSemester + 1; i <= 8; i++) {
     lastIPK = parseFloat((lastIPK + avgDelta).toFixed(2));
     prediksiData.push({ semester: i.toString(), ipk: lastIPK });
   }
 
   return prediksiData;
 }
+
 
 
 // Data regresi IP nilai akhir

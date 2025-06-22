@@ -18,54 +18,6 @@ import {
   getTugasUTSUASData
 } from '../services/statistikAkademik';
 
-const distribusiNilai = [
-  { range: '90 - 100', jumlah: 4 },
-  { range: '80 - 89', jumlah: 9 },
-  { range: '70 - 79', jumlah: 7 },
-  { range: '60 - 69', jumlah: 5 },
-  { range: '< 60', jumlah: 2 },
-];
-
-const ipSemester = [
-  { semester: '1', ip: 3.2 },
-  { semester: '2', ip: 3.5 },
-  { semester: '3', ip: 3.6 },
-  { semester: '4', ip: 3.4 },
-  { semester: '5', ip: 3.8 },
-  { semester: '6', ip: 3.7 },
-];
-
-const prediksiIpkData = [
-  { semester: '1', ipk: 3.2 },
-  { semester: '2', ipk: 3.4 },
-  { semester: '3', ipk: 3.5 },
-  { semester: '4', ipk: 3.55 },
-  { semester: '5', ipk: 3.58 },
-  { semester: '6', ipk: 3.60 },
-  { semester: '7', ipk: 3.62 },
-  { semester: '8', ipk: 3.64 },
-];
-
-const regresiData = [
-  { semester: 1, nilai: 76, prediksi: 77.2 },
-  { semester: 2, nilai: 79, prediksi: 80.1 },
-  { semester: 3, nilai: 83, prediksi: 83.0 },
-  { semester: 4, nilai: 85, prediksi: 85.9 },
-  { semester: 5, nilai: 88, prediksi: 88.8 },
-  { semester: 6, nilai: 91, prediksi: 91.7 },
-];
-
-
-const data = [
-    { semester: 1, tugas: 80, uts: 74, uas: 67 },
-    { semester: 2, tugas: 75, uts: 76, uas: 80 },
-    { semester: 3, tugas: 73, uts: 80, uas: 95 },
-    { semester: 4, tugas: 77, uts: 86, uas: 70 },
-    { semester: 5, tugas: 83, uts: 79, uas: 78 },
-    { semester: 6, tugas: 88, uts: 77, uas: 84 },
-    { semester: 7, tugas: 91, uts: 81, uas: 90 },
-    { semester: 8, tugas: 89, uts: 80, uas: 95 },
-];
 
 type DistribusiItem = { range: string; jumlah: number };
 type IPSItem = { semester: string; ip: number };
@@ -100,7 +52,6 @@ const StatistikAkademik = () => {
 
     const [regresi, setRegresi] = useState<{ semester: number; nilai: number | null; prediksi: number; }[]>([]);
     const [persamaan, setPersamaan] = useState<string>('');
-
     useEffect(() => {
       const user = JSON.parse(localStorage.getItem('user') ?? '{}');
       const id_mahasiswa = user?._id;
@@ -113,6 +64,48 @@ const StatistikAkademik = () => {
       }
       fetchData();
     }, []);
+
+    const [prediksiManual, setPrediksiManual] = useState(false)
+    const [semesterSekarang, setSemesterSekarang] = useState<number>(1);
+    const [targetNilai, setTargetNilai] = useState<'A' | 'B+' | 'B'>('A');
+    const [sksTersisa, setSksTersisa] = useState<number>(60);
+    const [prediksiIPK, setPrediksiIPK] = useState<{ semester: string, ipk: number }[]>([]);
+    const [prediksiNilaiAkhir, setPrediksiNilaiAkhir] = useState<number>(0);
+
+    function getTargetIPK(nilai: string): number {
+      switch (nilai) {
+        case 'A': return 4.0;
+        case 'B+': return 3.5;
+        case 'B': return 3.0;
+        default: return 3.0;
+      }
+    }
+    function hitungPrediksiIPK() {
+      const target = getTargetIPK(targetNilai);
+
+      const dataSebelum = ipkPrediksi.filter((d) => +d.semester <= semesterSekarang);
+      const sksSebelum = dataSebelum.length * 20;
+      const totalSks = sksSebelum + sksTersisa;
+
+      const totalMutuSebelum = dataSebelum.reduce((sum, d) => sum + d.ipk * 20, 0);
+      const totalMutuTarget = target * sksTersisa;
+      const prediksiAkhir = (totalMutuSebelum + totalMutuTarget) / totalSks;
+
+      const prediksiData = [...dataSebelum];
+      let sisaSemester = Math.ceil(sksTersisa / 20);
+      for (let i = 1; i <= sisaSemester; i++) {
+        prediksiData.push({
+          semester: (semesterSekarang + i).toString(),
+          ipk: target
+        });
+      }
+
+      setPrediksiIPK(prediksiData); // <- ini state baru untuk grafik
+      setPrediksiNilaiAkhir(parseFloat(prediksiAkhir.toFixed(2)));
+    }
+    useEffect(() => {
+      hitungPrediksiIPK();
+    }, [semesterSekarang, targetNilai, sksTersisa, ipkPrediksi]);
 
     return (
         <div className="statistik-akademik container-fluid min-vh-100 bg-light">
@@ -204,24 +197,39 @@ const StatistikAkademik = () => {
 
 
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
-                      <h5 className="fw-semibold mb-3">Prediksi IPK Akhir</h5>
+                      <div className='d-flex justify-content-between'>
+                        <h5 className="fw-semibold mb-3">Prediksi IPK Akhir</h5>
+                        <div className="form-check form-switch">
+                          <label className="form-check-label" htmlFor="togglePrediksi">
+                            {prediksiManual ? 'Manual On' : 'Manual Off'}
+                          </label>
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="togglePrediksi"
+                            checked={prediksiManual}
+                            onChange={() => setPrediksiManual(!prediksiManual)}
+                          />
+                        </div>
+                      </div>
 
                       {/* Kontrol prediksi */}
                       <div className="row g-3 mb-2">
                         <div className="col-md-4">
                           <label className="form-label fw-semibold">Semester Saat Ini</label>
-                          <select className="form-select">
-                            {ipkPrediksi.map((s) => (
-                              <option key={s.semester} value={s.semester}>
-                                Semester {s.semester}
-                              </option>
-                            ))}
-                          </select>
-
+                            <select className="form-select" value={semesterSekarang} onChange={(e) => setSemesterSekarang(+e.target.value)}
+                              disabled={!prediksiManual}
+                              >
+                              {ipkPrediksi.map((s) => (
+                                <option key={s.semester} value={s.semester}>Semester {s.semester}</option>
+                              ))}
+                            </select>
                         </div>
                         <div className="col-md-4">
                           <label className="form-label fw-semibold">Target Nilai Tiap Matkul</label>
-                          <select className="form-select">
+                          <select className="form-select" value={targetNilai} onChange={(e) => setTargetNilai(e.target.value as any)}
+                            disabled={!prediksiManual}
+                            >
                             <option value="A">A (90-100)</option>
                             <option value="B+">B+ (80-89)</option>
                             <option value="B">B (70-79)</option>
@@ -229,7 +237,13 @@ const StatistikAkademik = () => {
                         </div>
                         <div className="col-md-4">
                           <label className="form-label fw-semibold">Bobot SKS Tersisa</label>
-                          <input type="number" className="form-control" defaultValue={60} />
+                          <input
+                            type="number"
+                            className="form-control"
+                            value={sksTersisa}
+                            onChange={(e) => setSksTersisa(+e.target.value)}
+                            disabled={!prediksiManual}
+                          />
                         </div>
                       </div>
 
@@ -238,12 +252,18 @@ const StatistikAkademik = () => {
                         <div>
                           Dengan skenario ini, <strong>prediksi IPK akhir kamu</strong> adalah:
                         </div>
-                        <h3 className="fw-bold text-primary m-0">3.64</h3>
+                        <h3 className="fw-bold text-primary m-0">
+                          {
+                            prediksiManual
+                              ? prediksiIPK[prediksiIPK.length - 1]?.ipk.toFixed(2)
+                              : ipkPrediksi[ipkPrediksi.length - 1]?.ipk.toFixed(2)
+                          }
+                        </h3>
                       </div>
 
                       {/* Grafik prediksi */}
                       <ResponsiveContainer width="100%" height={250}>
-                        <LineChart data={ipkPrediksi}>
+                          <LineChart data={prediksiManual? prediksiIPK : ipkPrediksi}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
                           <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
@@ -268,7 +288,7 @@ const StatistikAkademik = () => {
                         </LineChart>
                       </ResponsiveContainer>
 
-                      <div className="mt-3 text-muted small">
+                      <div className="mt-3 text-muted large fw-bold">
                         Persamaan regresi: <code>{persamaan}</code> <br />
                       </div>
                     </div>

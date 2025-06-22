@@ -19,8 +19,12 @@ export class IPK {
                 const current = semuaSemester.find((item: any) => item.semester === semester);
 
                 if (current && typeof current.ips === 'number') {
-                    totalMutu += current.ips * (current.nilai?.[0]?.sks || 0);
-                    totalSks += current.nilai?.[0]?.sks || 0;
+                    const totalSksSemester = (current.nilai ?? []).reduce((sum: number, n: any) => sum + (n.sks || 0), 0);
+                    const mutuSemester = current.ips * totalSksSemester;
+
+                    totalMutu += mutuSemester;
+                    totalSks += totalSksSemester;
+
                     const ipk = totalSks === 0 ? null : parseFloat((totalMutu / totalSks).toFixed(2));
 
                     data.push({
