@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles/Mahasiswa.css'
 import Sidebar from '../components/Sidebar'
 import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { createDataNilai, getListNilaiTertinggi, getTotalSKS } from '../services/Nilai';
 import type { NilaiMatkulDenganAkhir } from '../services/Nilai';
 import { useIPKData } from '../hooks/useIPK';
@@ -37,15 +37,16 @@ const Mahasiswa = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
 
 
-    useEffect(() => {
-        const fetchNilai = async () => {
-            if (!getProfile?._id) return;
-            const data = await getListNilaiTertinggi(getProfile?._id);
-            setListNilai(data ?? null);
-            setNilaiTertinggi(data?.[0] || null)
-        };
-        fetchNilai();
+    const freshNilai = useCallback(async () => {
+        if (!getProfile?._id) return;
+        const data = await getListNilaiTertinggi(getProfile._id);
+        setListNilai(data ?? null);
+        setNilaiTertinggi(data?.[0] || null);
     }, [getProfile?._id]);
+
+    useEffect(() => {
+        freshNilai();
+    }, [freshNilai]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const target = e.target;
@@ -107,6 +108,7 @@ const Mahasiswa = () => {
             if (success) {
                 showSuccess('Berhasil tambah nilai');
                 localStorage.removeItem(`ipkData-${getProfile._id}`);
+                freshNilai();
             }
             } catch (error) {
             showError('Gagal tambah nilai');
@@ -217,15 +219,21 @@ const Mahasiswa = () => {
 
             if (item.nilaiTugas) {
                 const target = `${URL}/nilai/${getProfile._id}/${item.semester}/Tugas/${item.nilaiTugas}`;
-                requests.push(axios.delete(target));
+                requests.push(axios.delete(target, {
+                data: { nama_mk: item.mataKuliah }
+            }));
             }
             if (item.nilaiUTS) {
                 const target = `${URL}/nilai/${getProfile._id}/${item.semester}/UTS/${item.nilaiUTS}`;
-                requests.push(axios.delete(target));
+                requests.push(axios.delete(target, {
+                data: { nama_mk: item.mataKuliah }
+            }));
             }
             if (item.nilaiUAS) {
                 const target = `${URL}/nilai/${getProfile._id}/${item.semester}/UAS/${item.nilaiUAS}`;
-                requests.push(axios.delete(target));
+                requests.push(axios.delete(target, {
+                data: { nama_mk: item.mataKuliah }
+            }));
             }
 
             return requests;
@@ -234,6 +242,8 @@ const Mahasiswa = () => {
         try {
             await Promise.all(deleteRequests);
             showSuccess('Deleted!');
+            localStorage.removeItem(`ipkData-${getProfile._id}`);
+            freshNilai();
         } catch (err) {
             console.error('Gagal menghapus sebagian nilai:', err);
         }
