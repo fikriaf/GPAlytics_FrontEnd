@@ -1,18 +1,21 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles/Mahasiswa.css'
 import Sidebar from '../components/Sidebar'
-import { use, useEffect, useRef, useState } from 'react';
-import { createDataNilai, getListNilaiTertinggi, getTotalSKSSemesterIni } from '../services/Nilai';
+import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
+import { createDataNilai, getListNilaiTertinggi, getTotalSKS } from '../services/Nilai';
 import type { NilaiMatkulDenganAkhir } from '../services/Nilai';
 import { useIPKData } from '../hooks/useIPK';
 import { mataKuliah } from '../services/mataKuliah';
 import type { DataNilaiInput } from '../services/Nilai';
+import { prediksiLulusBerdasarkanProgres } from '../services/prediksi';
+import { IPK } from '../services/IP';
+import guestImg from '../assets/guest.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import guestImg from '../assets/guest.png'
 import { FiEdit3, FiUser, FiEye, FiEyeOff, FiSearch } from 'react-icons/fi';
+import { BiInfoCircle } from 'react-icons/bi';
 import { AiOutlineClose } from 'react-icons/ai';
-import axios from 'axios';
 import { useProfile } from '../hooks/useProfile';
 import { usePassword } from '../hooks/usePassword';
 import { useAlert } from '../hooks/useAlert';
@@ -139,9 +142,7 @@ const Mahasiswa = () => {
     },[doAction])
     
     const [editItems, setEditItems] = useState<any[]>([]);
-
     const initializedRef = useRef(false);
-
     useEffect(() => {
         if (!selectedItems || initializedRef.current) return;
 
@@ -242,13 +243,34 @@ const Mahasiswa = () => {
     useEffect(() => {
         const fetchSKS = async () => {
             if (!getProfile || !semesterTerakhir) return;
-            const total = await getTotalSKSSemesterIni(getProfile._id, parseInt(semesterTerakhir));
-            setTotalSKSSemesterIni(total);
+            const total = await getTotalSKS(getProfile._id);
+            setTotalSKSSemesterIni(total.semesterSaatIni);
         };
-
         fetchSKS();
     }, [getProfile, semesterTerakhir]);
 
+    const [prediksiLulus, setPrediksiLulus] = useState<null | ReturnType<typeof prediksiLulusBerdasarkanProgres>>(null);
+    useEffect(() => {
+        const fetchPrediksi = async () => {
+            if (!getProfile || !getProfile._id || !getProfile.angkatan) return;
+
+            const { semesterSaatIni, totalSKS } = await getTotalSKS(getProfile._id);
+
+            const semuaIPK = await IPK.getAll(getProfile._id);
+            const ipkTerakhir = semuaIPK?.[semuaIPK.length - 1]?.ipk ?? 0;
+
+            const hasil = prediksiLulusBerdasarkanProgres({
+            totalSKS,
+            ipk: ipkTerakhir,
+            semesterAktif: semesterSaatIni,
+            tahunMasuk: parseInt(getProfile.angkatan)
+            });
+
+            setPrediksiLulus(hasil);
+        };
+
+        fetchPrediksi();
+    }, [getProfile]);
 
     return (
         <div className="mahasiswa container-fluid min-vh-100 bg-light">
@@ -266,20 +288,23 @@ const Mahasiswa = () => {
                 <div className="modal fade" id="deleteModal" tabIndex={-1} aria-labelledby="deleteModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
-                        <div className="modal-header d-flex align-items-center">
-                            <h5 className="modal-title" id="deleteModalLabel">Apakah kamu yakin mengapus data ini?</h5>
-                            <button type="button" className="btn m-0 p-0 border-none" data-bs-dismiss="modal" aria-label="Close"><AiOutlineClose size={20} /></button>
-                        </div>
-                        <div className="modal-body">
-                            <div>
-                                { selectedItems && (
-                                    selectedItems.map((item:any)=>(
-                                        <div className='border-bottom text-muted mb-1'>{item.mataKuliah} | sem {item.semester} | {item.sks} sks | ({item.nilaiTugas??'null'}:{item.nilaiUTS??'null'}:{item.nilaiUAS??'null'})</div>
-                                    ))
-                                )}
+                            <div className="modal-header d-flex align-items-center">
+                                <h5 className="modal-title" id="deleteModalLabel">Apakah kamu yakin mengapus data ini?</h5>
+                                <button type="button" className="btn m-0 p-0 border-none" data-bs-dismiss="modal" aria-label="Close"><AiOutlineClose size={20} /></button>
                             </div>
-                            <button type="submit" className="btn btn-primary mt-3" onClick={handleSubmitDelete}>Delete</button>
-                        </div>
+                            <div className="modal-body">
+                                <div>
+                                    { selectedItems ? (
+                                        selectedItems.map((item:any)=>(
+                                            <div className='border-bottom text-muted mb-1'>{item.mataKuliah} | sem {item.semester} | {item.sks} sks | ({item.nilaiTugas??'null'}:{item.nilaiUTS??'null'}:{item.nilaiUAS??'null'})</div>
+                                        ))
+                                    ):(
+                                        <div className='border-bottom text-muted mb-1'>Select First!</div>
+                                    )}
+                                </div>
+                                <button type="submit" className="btn btn-primary mt-3"
+                                onClick={handleSubmitDelete}>Delete</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -365,10 +390,12 @@ const Mahasiswa = () => {
                                             </div>
                                         ))
                                     ) : (
-                                        <div>Please, select first!</div>
+                                        <div className='text-muted mb-2'>Please, select first!</div>
                                     )}
                                 </div>
-                                <button type="submit" className="btn btn-primary">Simpan</button>
+                                <button type="submit" className="btn btn-primary"
+                                disabled={!selectedItems || selectedItems.length === 0}
+                                >Simpan</button>
                             </form>
                         </div>
                         </div>
@@ -644,11 +671,22 @@ const Mahasiswa = () => {
                             </div>
                         </div>
                         <div className="col-md-3">
-                            <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 rounded shadow-sm p-3 text-center border-bottom border-danger border-3">
+                        <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 rounded shadow-sm p-3 text-center border-bottom border-danger border-3">
+                            <div className="d-flex align-items-center gap-1">
                                 <h6 className='m-1'>Prediksi Lulus</h6>
-                                <h2 className='m-1'>2026</h2>
-                                <p className="text-muted m-1 small">Berdasarkan progres SKS & IPK saat ini</p>
+                                <span
+                                    className='m-0 p-0'
+                                    title='Prediksi ini dihitung berdasarkan IPK terakhir, total SKS, semester aktif, dan tahun angkatan mahasiswa.'
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <BiInfoCircle size={20} className="text-primary" />
+                                </span>
                             </div>
+
+                            <h5 className='m-1 fw-bold'>{prediksiLulus?.tahunLulusPerkiraan}</h5>
+                            <p className='p-0 m-0 fw-bold'>[ {prediksiLulus?.status} ]</p>
+                            <p className="m-0 text-muted small">{prediksiLulus?.catatan}</p>
+                        </div>
                         </div>
                     </div>
 
@@ -697,7 +735,9 @@ const Mahasiswa = () => {
                                                 transform: 'translateX(0)',
                                             }}
                                         >
-                                            <button className='btn btn-outline-danger me-1' data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                                            <button className='btn btn-outline-danger me-1' data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                            disabled={!selectedItems || selectedItems.length === 0}
+                                            >Delete</button>
                                             <button className='btn btn-outline-primary me-1' data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
                                             <button className='btn btn-outline-success me-1' data-bs-toggle="modal" data-bs-target="#tambahModal">Tambah</button>
                                         </div>

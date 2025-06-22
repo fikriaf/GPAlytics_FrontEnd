@@ -54,7 +54,6 @@ const GPALyticsDashboard = () => {
         fetchNilai();
     }, [getProfile?._id]);
     
-    const [bahanRekomendasi, setBahanRekomendasi] = useState<any>(null);
     useEffect(() => {
         if (!getProfile || !Allmatkul.length || !listNilai) return;
         const rekomendasi = {
@@ -75,17 +74,8 @@ const GPALyticsDashboard = () => {
                 semesterInfo
             }
         };
-
-        setBahanRekomendasi(rekomendasi);
         localStorage.setItem('rekomendasi', JSON.stringify(rekomendasi))
     }, [getProfile, Allmatkul, listNilai]);
-
-    useEffect(() => {
-        const saved = localStorage.getItem('rekomendasi');
-        if (saved) {
-            setBahanRekomendasi(JSON.parse(saved));
-        }
-    }, []);
 
     const [resultRekomendasi, setResultRekomendasi] = useState<any>(null);
 
@@ -290,7 +280,14 @@ const GPALyticsDashboard = () => {
                             {/* Nilai Tertinggi */}
                             <div className="col-md-4">
                                 <div className="bg-white h-100 p-3 rounded shadow-sm d-flex flex-column justify-content-between">
-                                    <h6>Mata kuliah Dengan Nilai Tertinggi</h6>
+                                    <h6 className='d-flex gap-2'>
+                                        <div>Mata kuliah Dengan Nilai Tertinggi</div>
+                                        {isLoading && (
+                                            <div className="d-flex justify-content-center align-items-center top-0 end-50">
+                                                <div className="spinner-border spinner-border-sm text-primary" role="status" />
+                                            </div>
+                                        )}
+                                    </h6>
                                     <ul className="list-group normal-scroll" style={{maxHeight: '13rem', overflowY: 'auto'}}>
                                         { listNilai ? (
                                             listNilai.map((item:any)=>(

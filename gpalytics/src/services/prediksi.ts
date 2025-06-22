@@ -44,3 +44,64 @@ export async function PrediksiIPK(id_mahasiswa: string) {
         penjelasan: `Prediksi berdasarkan rata-rata perubahan IPK dari semester 1–${lastKnownIndex + 1}.`,
     };
 }
+interface PrediksiLulusProgres {
+    totalSKS: number;
+    ipk: number;
+    semesterAktif: number;
+    tahunMasuk: number;
+    status: 'Tepat Waktu' | 'Berpotensi Terlambat' | 'Terlambat';
+    tahunLulusPerkiraan: number;
+    catatan: string;
+}
+
+export function prediksiLulusBerdasarkanProgres({
+    totalSKS,
+    ipk,
+    semesterAktif,
+    tahunMasuk
+}: {
+    totalSKS: number;
+    ipk: number;
+    semesterAktif: number;
+    tahunMasuk: number;
+}): PrediksiLulusProgres {
+
+    const sksTarget = 144;
+    const semesterTarget = 8;
+    const ipkMinimum = 2.00;
+
+    const sisaSKS = sksTarget - totalSKS;
+    const sisaSemester = semesterTarget - semesterAktif;
+
+    const status =
+        semesterAktif > semesterTarget
+        ? 'Terlambat'
+        : sisaSKS / Math.max(sisaSemester, 1) > 24
+        ? 'Berpotensi Terlambat'
+        : 'Tepat Waktu';
+
+    const tahunLulusPerkiraan = tahunMasuk + Math.ceil((semesterAktif + Math.ceil(sisaSKS / 20)) / 2);
+
+    let catatan = '';
+
+    if (status === 'Terlambat') {
+        catatan = 'Mahasiswa telah melewati batas semester ideal (8 semester).';
+    } else if (status === 'Berpotensi Terlambat') {
+        catatan = 'Beban SKS per semester ke depan terlalu berat (>24 SKS/semester).';
+    } else if (ipk < ipkMinimum) {
+        catatan = 'IPK saat ini di bawah ambang batas kelulusan.';
+    } else {
+        catatan = 'Progres mengarah ke kelulusan tepat waktu.';
+    }
+
+    return {
+        totalSKS,
+        ipk,
+        semesterAktif,
+        tahunMasuk,
+        status,
+        tahunLulusPerkiraan,
+        catatan
+    };
+}
+

@@ -259,7 +259,8 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
                     className={`mb-2 p-2 rounded ${
                       msg.sender === 'User' ? 'bg-secondary text-light pb-0' : 'bg-black text-info border border-info w-100'
                     }`}
-                    style={{ maxWidth: '75%' }}
+                    style={{ maxWidth: msg.sender === 'User' ? '50%' : '100%',
+                      textAlign: 'justify' }}
                   >
                     <div className={`bg-primary d-flex justify-content-center text-light w-100 p-2 mb-3 ${msg.sender === 'User' ? 'd-none': 'd-block'}`}>{selectedLabel}</div>
                     

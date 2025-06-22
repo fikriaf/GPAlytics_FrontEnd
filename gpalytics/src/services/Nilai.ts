@@ -58,17 +58,33 @@ export async function createDataNilai(data: DataNilaiInput): Promise<boolean> {
     }
 }
 
-export async function getTotalSKSSemesterIni(id_mahasiswa: string, sks_terakhir: number): Promise<number> {
+export async function getTotalSKS(id_mahasiswa: string): Promise<{
+    semesterSaatIni: number;
+    totalSKS: number;
+    }> {
     try {
         const daftarNilai = await getListNilaiTertinggi(id_mahasiswa);
 
-        const totalSKS = daftarNilai
-            .filter((item) => item.semester === sks_terakhir)
-            .reduce((sum, item) => sum + (item.sks || 0), 0);
+        if (!daftarNilai.length) {
+        return {
+            semesterSaatIni: 0,
+            totalSKS: 0,
+        };
+        }
 
-        return totalSKS;
+        const totalSKS = daftarNilai.reduce((sum, item) => sum + (item.sks || 0), 0);
+        const semesterSaatIni = Math.max(...daftarNilai.map(item => item.semester));
+
+        return {
+        semesterSaatIni,
+        totalSKS,
+        };
     } catch (err) {
-        console.error('Gagal menghitung total SKS semester ini:', err);
-        return 0;
+        console.error('Gagal menghitung total SKS:', err);
+        return {
+        semesterSaatIni: 0,
+        totalSKS: 0,
+        };
     }
 }
+
