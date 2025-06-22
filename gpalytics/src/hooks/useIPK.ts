@@ -15,6 +15,7 @@ export function useIPKData() {
     const [ipkMin, setIpkMin] = useState<number | null>(null);
     const [ipkMax, setIpkMax] = useState<number | null>(null);
     const [semesterInfo, setSemesterInfo] = useState<any>({});
+    const [semesterTerakhir, setSemesterTerakhir] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -36,6 +37,7 @@ export function useIPKData() {
                 setIpsMax(parsed.maxIps)
                 setIpkMin(parsed.minIpk)
                 setIpkMax(parsed.maxIpk)
+                setSemesterTerakhir(parsed.semesterTerakhir)
                 setIsLoading(false);
                 return;
             }
@@ -79,7 +81,8 @@ export function useIPKData() {
                 minIps,
                 maxIps,
                 minIpk,
-                maxIpk
+                maxIpk,
+                semesterTerakhir
             }));
 
             setIsLoading(false);
@@ -98,6 +101,7 @@ export function useIPKData() {
         ipsMax,
         ipkMin,
         ipkMax,
-        semesterInfo
+        semesterInfo,
+        semesterTerakhir
     };
 }

@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles/Mahasiswa.css'
 import Sidebar from '../components/Sidebar'
 import { use, useEffect, useRef, useState } from 'react';
-import { createDataNilai, getListNilaiTertinggi } from '../services/Nilai';
+import { createDataNilai, getListNilaiTertinggi, getTotalSKSSemesterIni } from '../services/Nilai';
 import type { NilaiMatkulDenganAkhir } from '../services/Nilai';
 import { useIPKData } from '../hooks/useIPK';
 import { mataKuliah } from '../services/mataKuliah';
@@ -21,7 +21,7 @@ const URL = `${import.meta.env.VITE_URL_HOST}/api`;
 
 const Mahasiswa = () => {
     const { getProfile, updateProfile, setUpdateProfile } = useProfile();
-    const { isLoading, ipkTerakhir } = useIPKData();
+    const { isLoading, ipkTerakhir, semesterTerakhir } = useIPKData();
     const [isFlipped, setIsFlipped] = useState(false);
     const [showPassword, togglePassword] = usePassword();
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -162,51 +162,51 @@ const Mahasiswa = () => {
 
 
     const handleSubmitEdit = async (e: React.FormEvent) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
-        const updatedItems: any[] = [];
+        try {
+            const updatedItems: any[] = [];
 
-        for (const item of editItems) {
-            const { semester } = item;
+            for (const item of editItems) {
+                const { semester } = item;
 
-            if (item.nilaiTugas !== item.nilaiTugasBaru && item.nilaiTugasBaru != null) {
-                await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/Tugas/${item.nilaiTugas}`, {
-                    nilai: item.nilaiTugasBaru
-                });
-                item.nilaiTugas = item.nilaiTugasBaru;
+                if (item.nilaiTugas !== item.nilaiTugasBaru && item.nilaiTugasBaru != null) {
+                    await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/Tugas/${item.nilaiTugas}`, {
+                        nilai: item.nilaiTugasBaru
+                    });
+                    item.nilaiTugas = item.nilaiTugasBaru;
+                }
+
+                if (item.nilaiUTS !== item.nilaiUTSBaru && item.nilaiUTSBaru != null) {
+                    await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UTS/${item.nilaiUTS}`, {
+                        nilai: item.nilaiUTSBaru
+                    });
+                    item.nilaiUTS = item.nilaiUTSBaru;
+                }
+
+                if (item.nilaiUAS !== item.nilaiUASBaru && item.nilaiUASBaru != null) {
+                    await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UAS/${item.nilaiUAS}`, {
+                        nilai: item.nilaiUASBaru
+                    });
+                    item.nilaiUAS = item.nilaiUASBaru;
+                }
+
+                updatedItems.push(item);
             }
 
-            if (item.nilaiUTS !== item.nilaiUTSBaru && item.nilaiUTSBaru != null) {
-                await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UTS/${item.nilaiUTS}`, {
-                    nilai: item.nilaiUTSBaru
-                });
-                item.nilaiUTS = item.nilaiUTSBaru;
-            }
+            // Perbarui nilai di tampilan
+            setListNilai(prev =>
+                prev?.map(item =>
+                    updatedItems.find(u => u.mataKuliah === item.mataKuliah && u.semester === item.semester) || item
+                ) || null
+            );
 
-            if (item.nilaiUAS !== item.nilaiUASBaru && item.nilaiUASBaru != null) {
-                await axios.put(`${URL}/nilai/${getProfile._id}/${semester}/UAS/${item.nilaiUAS}`, {
-                    nilai: item.nilaiUASBaru
-                });
-                item.nilaiUAS = item.nilaiUASBaru;
-            }
-
-            updatedItems.push(item);
+            showSuccess("Simpan perubahan");
+            localStorage.removeItem(`ipkData-${getProfile._id}`);
+        } catch (err) {
+            console.error("Gagal menyimpan:", err);
         }
-
-        // Perbarui nilai di tampilan
-        setListNilai(prev =>
-            prev?.map(item =>
-                updatedItems.find(u => u.mataKuliah === item.mataKuliah && u.semester === item.semester) || item
-            ) || null
-        );
-
-        showSuccess("Simpan perubahan");
-        localStorage.removeItem(`ipkData-${getProfile._id}`);
-    } catch (err) {
-        console.error("Gagal menyimpan:", err);
-    }
-};
+    };
 
     const handleSubmitDelete = async () => {
         if (!getProfile || !selectedItems) return;
@@ -237,6 +237,18 @@ const Mahasiswa = () => {
             console.error('Gagal menghapus sebagian nilai:', err);
         }
     };
+    
+    const [totalSKSSemesterIni, setTotalSKSSemesterIni] = useState<number>(0);
+    useEffect(() => {
+        const fetchSKS = async () => {
+            if (!getProfile || !semesterTerakhir) return;
+            const total = await getTotalSKSSemesterIni(getProfile._id, parseInt(semesterTerakhir));
+            setTotalSKSSemesterIni(total);
+        };
+
+        fetchSKS();
+    }, [getProfile, semesterTerakhir]);
+
 
     return (
         <div className="mahasiswa container-fluid min-vh-100 bg-light">
@@ -627,8 +639,8 @@ const Mahasiswa = () => {
                         <div className="col-md-3">
                             <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 rounded shadow-sm p-3 text-center border-bottom border-success border-3">
                                 <h6 className='m-1'>Jumlah SKS Saat Ini</h6>
-                                <h2 className='m-1'>12 SKS</h2>
-                                <p className="text-muted m-1 small">Total SKS dari 4 matkul semester 4</p>
+                                <h2 className='m-1'>{totalSKSSemesterIni?? '__'} SKS</h2>
+                                <p className="text-muted m-1 small">Total SKS semester {semesterTerakhir}</p>
                             </div>
                         </div>
                         <div className="col-md-3">

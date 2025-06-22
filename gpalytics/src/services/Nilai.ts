@@ -57,3 +57,18 @@ export async function createDataNilai(data: DataNilaiInput): Promise<boolean> {
         return false;
     }
 }
+
+export async function getTotalSKSSemesterIni(id_mahasiswa: string, sks_terakhir: number): Promise<number> {
+    try {
+        const daftarNilai = await getListNilaiTertinggi(id_mahasiswa);
+
+        const totalSKS = daftarNilai
+            .filter((item) => item.semester === sks_terakhir)
+            .reduce((sum, item) => sum + (item.sks || 0), 0);
+
+        return totalSKS;
+    } catch (err) {
+        console.error('Gagal menghitung total SKS semester ini:', err);
+        return 0;
+    }
+}
