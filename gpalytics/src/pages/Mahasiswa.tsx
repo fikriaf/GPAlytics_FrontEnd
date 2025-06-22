@@ -128,7 +128,6 @@ const Mahasiswa = () => {
     function handleCheckboxChange(e: React.ChangeEvent<HTMLInputElement>, item: any) {
         if (e.target.checked) {
             setSelectedItems(prev => [...prev, item]);
-            console.log(selectedItems)
         } else {
             setSelectedItems(prev => prev.filter(i => i !== item));
         }
@@ -646,13 +645,13 @@ const Mahasiswa = () => {
                         <div className='d-flex flex-column flex-md-row align-items-center gap-2 justify-content-between mb-4'>
                             <h5 className="text-primary fw-semibold m-0">Data Nilai</h5>
                             {/* Pencarian */}
-                            <div className="input-group input-group-sm w-auto" style={{ maxWidth: '15rem' }}>
+                            <div className="input-group search input-group-sm w-auto" style={{ maxWidth: '15rem' }}>
                                 <span className="input-group-text bg-white border-end-0">
                                     <FiSearch className="text-muted" />
                                 </span>
                                 <input
                                     type="text"
-                                    className="form-control search border-start-0"
+                                    className="form-control border-start-0"
                                     style={{ fontFamily: 'Segoe UI, sans-serif', fontSize: '0.9rem' }}
                                     placeholder="Cari mata kuliah..."
                                     value={searchKeyword}

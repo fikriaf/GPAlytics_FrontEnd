@@ -1,3 +1,5 @@
+import { useEffect, useState, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import { useProfile } from '../hooks/useProfile';
 import { useIPKData } from '../hooks/useIPK';
@@ -8,7 +10,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/Dashboard.css'
 import Sidebar from '../components/Sidebar';
 import ConsultationModal from '../components/ConsultationModal';
-import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FiGrid } from 'react-icons/fi';
@@ -53,6 +54,54 @@ const GPALyticsDashboard = () => {
         fetchNilai();
     }, [getProfile?._id]);
     
+    const [bahanRekomendasi, setBahanRekomendasi] = useState<any>(null);
+    useEffect(() => {
+        if (!getProfile || !Allmatkul.length || !listNilai) return;
+        const rekomendasi = {
+            profile: {
+                name: getProfile.nama,
+                ...(getProfile.angkatan && { angkatan: getProfile.angkatan }),
+                ...(getProfile.gender && { gender: getProfile.gender })
+            },
+            nilaiTertinggi: listNilai,
+            ipkData: {
+                ipkTerakhir,
+                ipsTerakhir,
+                prediksiIPK,
+                ipkMin,
+                ipkMax,
+                ipsMin,
+                ipsMax,
+                semesterInfo
+            }
+        };
+
+        setBahanRekomendasi(rekomendasi);
+        localStorage.setItem('rekomendasi', JSON.stringify(rekomendasi))
+    }, [getProfile, Allmatkul, listNilai]);
+
+    useEffect(() => {
+        const saved = localStorage.getItem('rekomendasi');
+        if (saved) {
+            setBahanRekomendasi(JSON.parse(saved));
+        }
+    }, []);
+
+    const [resultRekomendasi, setResultRekomendasi] = useState<any>(null);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('resultRekomendasi');
+        if (!stored) return;
+
+        try {
+            const parsed = JSON.parse(stored);
+            setResultRekomendasi(parsed);
+        } catch (error) {
+            console.error('Gagal mem-parse resultRekomendasi dari localStorage:', error);
+        }
+    }, []);
+
+
     return (
         <>
             <div className="dashboard container-fluid min-vh-100 bg-light">
@@ -216,6 +265,9 @@ const GPALyticsDashboard = () => {
                                         <button className="rounded p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}>
                                         “Jelaskan apa itu Neural Network?”
                                         </button>
+                                        <button className="rounded p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}>
+                                        “Jelaskan useState dan useEffect pada React”
+                                        </button>
                                     </div>
                                 </div>
 
@@ -237,9 +289,9 @@ const GPALyticsDashboard = () => {
 
                             {/* Nilai Tertinggi */}
                             <div className="col-md-4">
-                                <div className="bg-white h-100 p-3 rounded shadow-sm">
+                                <div className="bg-white h-100 p-3 rounded shadow-sm d-flex flex-column justify-content-between">
                                     <h6>Mata kuliah Dengan Nilai Tertinggi</h6>
-                                    <ul className="list-group" style={{maxHeight: '10rem', overflowY: 'auto'}}>
+                                    <ul className="list-group normal-scroll" style={{maxHeight: '13rem', overflowY: 'auto'}}>
                                         { listNilai ? (
                                             listNilai.map((item:any)=>(
                                                 <li className="list-group-item d-flex align-items-center justify-content-between">
@@ -260,12 +312,28 @@ const GPALyticsDashboard = () => {
 
                             {/* Rekomendasi */}
                             <div className="col-md-4">
-                                <div className="bg-white h-100 p-3 rounded shadow-sm">
-                                    <h6>Rekomendasi Mata Kuliah</h6>
-                                    <span className="badge bg-primary me-2">Sistem digital</span>
-                                    <span className="badge bg-secondary">Psikologi</span>
-                                    <br />
-                                    <a className='text-decoration-none' href="#">Selengkapnya →</a>
+                                <div className="bg-white h-100 p-3 rounded shadow-sm d-flex flex-column justify-content-between">
+                                    <h6>Rekomendasi</h6>
+                                    <div
+                                    className="w-100 border p-1 pe-2 rounded normal-scroll"
+                                    style={{
+                                        maxHeight: "15rem",
+                                        overflowY: "auto"
+                                    }}
+                                    >
+                                    <ReactMarkdown
+                                    components={{
+                                        p: ({ node, ...props }) => (
+                                        <p style={{ textAlign: 'justify' }} {...props} />
+                                        ),
+                                        li: ({ node, ...props }) => (
+                                        <li style={{ textAlign: 'justify' }} {...props} />
+                                        )
+                                    }}
+                                    >
+                                        {resultRekomendasi}
+                                    </ReactMarkdown>
+                                    </div>
                                 </div>
                             </div>
                         </div>

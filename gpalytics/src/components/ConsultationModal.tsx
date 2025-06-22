@@ -7,6 +7,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface Message {
+  id?: number;
   sender: 'User' | 'AI';
   text: string;
 }
@@ -87,12 +88,13 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
   
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [scrollTrigger, setScrollTrigger] = useState(0);
+
   useLayoutEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [scrollTrigger]);
 
   const handleSend = async (text?:String) => {
-    const content = text?.trim() || message.trim();
+    let content = text?.trim() || message.trim();
 
     if (!content) return;
 
@@ -100,10 +102,41 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
     setMessages((prev) => [...prev, userMessage]);
     setMessage('');
     setScrollTrigger((prev) => prev + 1);
+    
+    const dataCollectingId = Date.now();
+    let isAnalisis = false
 
+    if (content === "Analisis data akademik saya!") {
+      isAnalisis = true
+      setScrollTrigger((prev) => prev + 1);
+      const aiResponse: Message = { id: dataCollectingId, sender: 'AI', text: `Mengumpulkan Data...` };
+      setMessages((prev) => [...prev, aiResponse]);
+      const bahan = localStorage.getItem('rekomendasi')
+      content = `Kamu adalah seorang data analis professional, maka analisislah data berikut ini dengan mendalam dan output berupa 'rekomendasi' saja. ${bahan}`
+      setTimeout(()=>{
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === dataCollectingId
+              ? { ...msg, text: '✅ Data berhasil dikumpulkan!' }
+              : msg
+          )
+        );
+      }, 1000)
+      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      await delay(2000);
+    } else {
+      const aiResponse: Message = { sender: 'AI', text: `` };
+      setMessages((prev) => [...prev, aiResponse]);
+    }
+
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === dataCollectingId
+          ? { ...msg, text: 'Thinking...' }
+          : msg
+      )
+    );
     let streamedText = '';
-    const aiResponse: Message = { sender: 'AI', text: `` };
-    setMessages((prev) => [...prev, aiResponse]);
 
     const updateAIMessage = (chunk: string) => {
       streamedText += chunk;
@@ -130,8 +163,13 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
       content: msg.text
     })));
     
-    setResult(streamedText);
+    if (isAnalisis) setResult(streamedText);
   };
+  
+  useEffect(()=>{
+    if(!result) return;
+    localStorage.setItem('resultRekomendasi', JSON.stringify(result));
+  }, [result])
 
   return (
     <div className={`modal fade mt-0 ${show ? 'show d-block' : 'd-block'}`}
