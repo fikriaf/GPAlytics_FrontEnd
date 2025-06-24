@@ -496,7 +496,7 @@ const Mahasiswa = () => {
                                         <div>
                                             <h4 className="mb-1">{updateProfile?.nama || 'Guest'}</h4>
                                             <p className="mb-2 text-muted">{updateProfile?.email || 'guest@gmail.com'}</p>
-                                            <button className="btn btn-outline-primary btn-sm"
+                                            <button className="btn button-scale btn-outline-primary btn-sm"
                                             onClick={() => setIsFlipped(true)}
                                             >
                                                 Edit Profile
@@ -592,8 +592,8 @@ const Mahasiswa = () => {
                                                 </span>
                                             </div>
                                             <div className='d-flex gap-2'>
-                                                <button type='reset' onClick={() => setIsFlipped(false)} className="btn btn-secondary btn-sm py-1">Cancel</button>
-                                                <button type="submit" className="btn btn-success py-1 btn-sw">Save</button>
+                                                <button type='reset' onClick={() => setIsFlipped(false)} className="btn btn-secondary button-scale btn-sm py-1">Cancel</button>
+                                                <button type="submit" className="btn btn-success button-scale py-1 btn-sw">Save</button>
                                             </div>
                                         </div>
                                     </div>
@@ -716,7 +716,7 @@ const Mahasiswa = () => {
                                 {[...new Set((listNilaiId ?? []).map((item) => item.semester))].sort().map((sem) => (
                                     <button
                                     key={sem}
-                                    className={`btn btn-sm ${semesterFilter === sem ? 'btn-primary' : 'btn-outline-primary'}`}
+                                    className={`btn btn-sm button-scale ${semesterFilter === sem ? 'btn-primary' : 'btn-outline-primary'}`}
                                     onClick={() => setSemesterFilter(sem)}
                                     >
                                     Sem {sem}

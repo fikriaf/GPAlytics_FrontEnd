@@ -2,12 +2,14 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import './styles/StatistikAkademik.css'
 import { useState, useEffect } from 'react';
 import { useProfile } from '../hooks/useProfile';
+import { getListNilaiTertinggi } from '../services/Nilai';
+import type { NilaiMatkulDenganAkhir } from '../services/Nilai';
 import Sidebar from '../components/Sidebar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FiBarChart2 } from 'react-icons/fi';
 import {
-    BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+    BarChart, Bar, LineChart, Line, ReferenceLine, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from "recharts";
 
 import {
@@ -20,7 +22,7 @@ import {
 
 
 type DistribusiItem = { range: string; jumlah: number };
-type IPSItem = { semester: string; ip: number };
+type IPSItem = { semester: string; ip: number | null };
 type IPKPrediksiItem = { semester: string; ipk: number };
 type RegresiItem = { semester: number; nilai: number; prediksi?: number };
 type NilaiRataItem = { semester: number; tugas: number; uts: number; uas: number };
@@ -100,12 +102,49 @@ const StatistikAkademik = () => {
         });
       }
 
-      setPrediksiIPK(prediksiData); // <- ini state baru untuk grafik
+      setPrediksiIPK(prediksiData);
       setPrediksiNilaiAkhir(parseFloat(prediksiAkhir.toFixed(2)));
     }
     useEffect(() => {
       hitungPrediksiIPK();
     }, [semesterSekarang, targetNilai, sksTersisa, ipkPrediksi]);
+
+
+    const [listNilai, setListNilai] = useState<NilaiMatkulDenganAkhir[] | null>(null);
+    const [jumlahSKS, setJumlahSKS] = useState<number>()
+    useEffect(() => {
+        const fetchNilai = async () => {
+            if (!getProfile?._id) return;
+            const data = await getListNilaiTertinggi(getProfile?._id);
+            setListNilai(data ?? null);
+            const totalSKS = data.reduce((acc: number, item: any) => acc + item.sks, 0);
+            setJumlahSKS(totalSKS);
+        };
+        fetchNilai();
+    }, [getProfile?._id]);
+    
+    const [rataRata, setRataRata] = useState(0);
+    useEffect(() => {
+      if (!tugasUtsUas.length) return;
+
+      const total = tugasUtsUas.reduce(
+        (sum, item) => sum + item.tugas + item.uts + item.uas,
+        0
+      );
+      const rata = total / (tugasUtsUas.length * 3);
+      setRataRata(+rata.toFixed(2));
+    }, [tugasUtsUas]);
+
+    const semuaNilai = tugasUtsUas.flatMap(item => [item.tugas, item.uts, item.uas]);
+    const nilaiMinimum = Math.floor(Math.min(...semuaNilai));
+    const semuaIPS = ips.flatMap(item => item.ip ? [item.ip] : []);
+    const nilaiMinimumIPS = Math.min(...semuaIPS);
+    const semuaIPK = prediksiIPK.flatMap(item => item.ipk ? [item.ipk] : []);
+    const nilaiMinimumIPK = Math.min(...semuaIPK);
+    const semuaRegresi = regresi.flatMap(item => [item.prediksi]);
+    const nilaiMinimumRegresi = Math.floor(Math.min(...semuaRegresi));
+
+    console.log(nilaiMinimumRegresi)
 
     return (
         <div className="statistik-akademik container-fluid min-vh-100 bg-light">
@@ -126,7 +165,7 @@ const StatistikAkademik = () => {
                       <div className="col-md-4">
                           <div className="border-start border-4 border-primary bg-white rounded shadow p-4 h-100">
                           <p className="text-uppercase text-secondary fw-semibold mb-2 small">Jumlah Mata Kuliah</p>
-                          <h1 className="fw-bold text-dark display-6 mb-0">27</h1>
+                          <h1 className="fw-bold text-dark display-6 mb-0">{listNilai?.length || '__'}</h1>
                           <p className="text-muted small mt-1">Total dari seluruh semester</p>
                           </div>
                       </div>
@@ -135,7 +174,7 @@ const StatistikAkademik = () => {
                       <div className="col-md-4">
                           <div className="border-start border-4 border-success bg-white rounded shadow p-4 h-100">
                           <p className="text-uppercase text-secondary fw-semibold mb-2 small">Jumlah SKS</p>
-                          <h1 className="fw-bold text-dark display-6 mb-0">87<span className="text-muted fs-5"> / 144</span></h1>
+                          <h1 className="fw-bold text-dark display-6 mb-0">{jumlahSKS ?? '__'}<span className="text-muted fs-5"> / 144</span></h1>
                           <p className="text-muted small mt-1">Total SKS lulus dibanding maksimum</p>
                           </div>
                       </div>
@@ -144,7 +183,7 @@ const StatistikAkademik = () => {
                       <div className="col-md-4">
                           <div className="border-start border-4 border-warning bg-white rounded shadow p-4 h-100">
                           <p className="text-uppercase text-secondary fw-semibold mb-2 small">Rata-rata Nilai</p>
-                          <h1 className="fw-bold text-dark display-6 mb-0">83.4</h1>
+                          <h1 className="fw-bold text-dark display-6 mb-0">{rataRata ?? '__._'}</h1>
                           <p className="text-muted small mt-1">Skor gabungan seluruh semester</p>
                           </div>
                       </div>
@@ -157,12 +196,21 @@ const StatistikAkademik = () => {
                         <LineChart data={tugasUtsUas}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-                            <YAxis domain={[0, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
+                            <YAxis domain={[nilaiMinimum? nilaiMinimum-10 : 20, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
                             <Tooltip />
                             <Legend verticalAlign="top" align="right" />
                             <Line type="monotone" dataKey="tugas" stroke="#d1d1d1" strokeWidth={3} name="Tugas" />
                             <Line type="monotone" dataKey="uts" stroke="#007bff" strokeWidth={3} name="UTS" />
                             <Line type="monotone" dataKey="uas" stroke="#28a745" strokeWidth={3} name="UAS" />
+                            <ReferenceLine y={rataRata} stroke="red" strokeDasharray="3 3"
+                            label={{
+                              value: `Rata-rata (${rataRata})`,
+                              position: "top",
+                              fill: "red",
+                              fontSize: 12,
+                              fontWeight: "bold",
+                            }}
+                            />
                         </LineChart>
                         </ResponsiveContainer>
                     </div>
@@ -188,11 +236,31 @@ const StatistikAkademik = () => {
                         <LineChart data={ips}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-                          <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
+                          <YAxis domain={[nilaiMinimumIPS?parseFloat((nilaiMinimumIPS-0.2).toFixed(2)):2, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
                           <Tooltip />
                           <Line type="monotone" dataKey="ip" stroke="#ffc107" strokeWidth={3} dot={{ r: 5 }} />
                         </LineChart>
                       </ResponsiveContainer>
+                    </div>
+
+                    <div className="bg-white rounded shadow-sm p-4 mb-2">
+                      <h5 className="fw-semibold mb-3">Regresi Linier: Prediksi Nilai Akhir per Semester</h5>
+
+                      <ResponsiveContainer width="100%" height={250}>
+                        <LineChart data={regresi}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+                          <YAxis domain={[nilaiMinimumRegresi? nilaiMinimumRegresi-10 : 20, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
+                          <Tooltip />
+                          <Legend />
+                          <Line type="monotone" dataKey="nilai" stroke="#0d6efd" strokeWidth={3} name="Nilai Akhir" />
+                          <Line type="monotone" dataKey="prediksi" stroke="#ffc107" strokeWidth={3} strokeDasharray="5 5" name="Regresi" />
+                        </LineChart>
+                      </ResponsiveContainer>
+
+                      <div className="mt-3 text-muted large fw-bold">
+                        Persamaan regresi: <code>{persamaan}</code> <br />
+                      </div>
                     </div>
 
 
@@ -266,31 +334,11 @@ const StatistikAkademik = () => {
                           <LineChart data={prediksiManual? prediksiIPK : ipkPrediksi}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-                          <YAxis domain={[0, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
+                          <YAxis domain={[nilaiMinimumIPK?parseFloat((nilaiMinimumIPK-0.2).toFixed(2)):2, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
                           <Tooltip />
                           <Line type="monotone" dataKey="ipk" stroke="#20c997" strokeWidth={3} />
                         </LineChart>
                       </ResponsiveContainer>
-                    </div>
-
-                    <div className="bg-white rounded shadow-sm p-4 mb-2">
-                      <h5 className="fw-semibold mb-3">Regresi Linier: Prediksi Nilai Akhir per Semester</h5>
-
-                      <ResponsiveContainer width="100%" height={250}>
-                        <LineChart data={regresi}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-                          <YAxis domain={[50, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
-                          <Tooltip />
-                          <Legend />
-                          <Line type="monotone" dataKey="nilai" stroke="#0d6efd" strokeWidth={3} name="Nilai Akhir" />
-                          <Line type="monotone" dataKey="prediksi" stroke="#ffc107" strokeWidth={3} strokeDasharray="5 5" name="Regresi" />
-                        </LineChart>
-                      </ResponsiveContainer>
-
-                      <div className="mt-3 text-muted large fw-bold">
-                        Persamaan regresi: <code>{persamaan}</code> <br />
-                      </div>
                     </div>
                 </div>
             </div>

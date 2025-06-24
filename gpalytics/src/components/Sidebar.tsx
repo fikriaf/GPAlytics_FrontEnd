@@ -60,27 +60,27 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
             <ul className="nav flex-column mb-4">
                 <li className="nav-item my-1">
-                    <NavLink to="/dashboard" className="nav-link nav-link-main d-flex align-items-center gap-2 default" end>
+                    <NavLink to="/dashboard" className="button-scale-m nav-link nav-link-main d-flex align-items-center gap-2 default" end>
                         <FiGrid size={20} /> Dashboard
                     </NavLink>
                 </li>
                 <li className="nav-item my-1">
-                    <NavLink to="/mahasiswa" className="nav-link nav-link-main d-flex align-items-center gap-2">
+                    <NavLink to="/mahasiswa" className="button-scale-m nav-link nav-link-main d-flex align-items-center gap-2">
                         <FiUser size={20} /> Mahasiswa
                     </NavLink>
                 </li>
                 <li className="nav-item my-1">
-                    <NavLink to="/update-nilai" className="nav-link nav-link-main d-flex align-items-center gap-2">
+                    <NavLink to="/update-nilai" className="button-scale-m nav-link nav-link-main d-flex align-items-center gap-2">
                         <FiEdit3 size={20} /> Update Nilai
                     </NavLink>
                 </li>
                 <li className="nav-item my-1">
-                    <NavLink to="/statistik-akademik" className="nav-link nav-link-main d-flex align-items-center gap-2">
+                    <NavLink to="/statistik-akademik" className="button-scale-m nav-link nav-link-main d-flex align-items-center gap-2">
                         <FiBarChart2 size={20} /> Statistik Akademik
                     </NavLink>
                 </li>
                 <li className="nav-item my-1">
-                    <NavLink to="/support-center" className="nav-link nav-link-main d-flex align-items-center gap-2">
+                    <NavLink to="/support-center" className="button-scale-m nav-link nav-link-main d-flex align-items-center gap-2">
                         <FiHelpCircle size={20} /> Support Center
                     </NavLink>
                 </li>

@@ -147,3 +147,20 @@
     scrollbar-width: thin;
     scrollbar-color: #0d6efd #ffffff;
 }
+
+.button-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.button-scale:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.button-scale-m {
+    transition: transform 0.2s ease !important;
+}
+
+.button-scale-m:hover {
+    transform: scale(1.1);
+}

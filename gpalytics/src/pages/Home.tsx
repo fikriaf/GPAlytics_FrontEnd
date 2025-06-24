@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import ConsultationModal from '../components/ConsultationModal';
 import { Link } from 'react-router-dom';
-import bgImg from '../assets/bg.png';
+import bgImg from '../assets/bg.webp';
 import './styles/Home.css'
 import { FaUserPlus, FaSignInAlt, FaChevronDown, FaFacebook, FaGithub, FaInstagram, FaLinkedin, FaAngleUp } from "react-icons/fa";
 import { FiInfo, FiPhone, FiFileText, FiCpu, FiArrowRight, FiChevronRight } from 'react-icons/fi';
@@ -61,7 +61,7 @@ function Home() {
                         <Link to="/signup" className="btn-signup btn px-4 btn-primary shadow d-flex align-items-center gap-2">
                             <FaUserPlus /><span>Sign Up</span>
                         </Link>
-                        <Link to="/login" className="btn px-4 btn-outline-primary shadow d-flex align-items-center gap-2">
+                        <Link to="/login" className="btn-signin btn px-4 btn-outline-primary shadow d-flex align-items-center gap-2">
                             <FaSignInAlt /><span>Sign In</span>
                         </Link>
                     </div>

@@ -50,11 +50,11 @@
 }
 
 thead th {
-  position: sticky;
-  top: 0;
-  background: #0d6efd;
-  color: white;
-  z-index: 1;
+    position: sticky;
+    top: 0;
+    background: #0d6efd;
+    color: white;
+    z-index: 1;
 }
 
 @keyframes slideIn {
@@ -65,6 +65,7 @@ thead th {
         transform: translateX(0);
     }
 }
+
 
 @media screen and (max-width: 768px) {
     .detailProfile {

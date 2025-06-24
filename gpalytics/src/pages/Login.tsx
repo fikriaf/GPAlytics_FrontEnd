@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import bgImg from '../assets/bg.png';
+import bgImg from '../assets/bg.webp';
 import googleImg from '../assets/google.png';
 import { FiEye, FiEyeOff, FiLogIn } from 'react-icons/fi';
 import './styles/Login.css';

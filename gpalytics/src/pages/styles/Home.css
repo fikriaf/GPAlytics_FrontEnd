@@ -10,10 +10,12 @@
 .bg .nav-home a {
     font-family: Heebo;
     font-weight: 600;
+    transition: transform 0.2s ease;
 }
 
 .bg .nav-home a:hover {
     color: white;
+    transform: scale(1.05);
 }
 
 .bg-image {
@@ -48,10 +50,18 @@
     font-family: "Anek Telugu";
 }
 
+.button btn {
+    transition: transform 0.5s ease;
+}
+
 .btn-signup:hover {
     color: #0d6efd !important;
     background-color: white !important;
     border: solid 1px #0d6efd;
+    transform: scale(1.08);
+}
+.btn-signin:hover {
+    transform: scale(1.08) !important;
 }
 
 .button-footer {

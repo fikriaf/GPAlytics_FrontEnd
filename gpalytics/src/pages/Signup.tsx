@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import bgImg from '../assets/bg.png';
+import bgImg from '../assets/bg.webp';
 import googleImg from '../assets/google.png';
 import './styles/Signup.css';
 import axios from 'axios'

@@ -77,21 +77,24 @@ const GPALyticsDashboard = () => {
         localStorage.setItem('rekomendasi', JSON.stringify(rekomendasi))
     }, [getProfile, Allmatkul, listNilai]);
 
-    const [resultRekomendasi, setResultRekomendasi] = useState<any>(null);
 
+
+    const [resultRekomendasi, setResultRekomendasi] = useState<any>(null);
     useEffect(() => {
         const stored = localStorage.getItem('resultRekomendasi');
         if (!stored) return;
-
         try {
             const parsed = JSON.parse(stored);
             setResultRekomendasi(parsed);
         } catch (error) {
             console.error('Gagal mem-parse resultRekomendasi dari localStorage:', error);
         }
-    }, []);
+    }, [localStorage.getItem('resultRekomendasi')]);
 
 
+    useEffect(() => {
+
+    })
     return (
         <>
             <div className="dashboard container-fluid min-vh-100 bg-light">
@@ -282,17 +285,19 @@ const GPALyticsDashboard = () => {
                                 <div className="bg-white h-100 p-3 rounded shadow-sm d-flex flex-column justify-content-between">
                                     <h6 className='d-flex gap-2'>
                                         <div>Mata kuliah Dengan Nilai Tertinggi</div>
-                                        {isLoading && (
+                                        {isLoading ? (
                                             <div className="d-flex justify-content-center align-items-center top-0 end-50">
                                                 <div className="spinner-border spinner-border-sm text-primary" role="status" />
                                             </div>
+                                        ) : (
+                                            <span className='badge bg-info text-dark'>{listNilai?.length}</span>
                                         )}
                                     </h6>
                                     <ul className="list-group normal-scroll" style={{maxHeight: '13rem', overflowY: 'auto'}}>
                                         { listNilai ? (
                                             listNilai.map((item:any)=>(
                                                 <li className="list-group-item d-flex align-items-center justify-content-between">
-                                                    <div>{item.mataKuliah} [{item.nilaiAkhir}]</div>
+                                                    <div>{item.mataKuliah} [{(item.nilaiAkhir).toFixed(2)}]</div>
                                                     <div>{getBobotMutu(item.nilaiAkhir)}</div>
                                                 </li>
                                             ))

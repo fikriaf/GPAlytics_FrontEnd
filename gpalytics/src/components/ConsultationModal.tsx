@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import axios from 'axios';
 import { FiSend } from 'react-icons/fi';
 import './styles/modal.css'
 import { streamVercelAI } from '../services/ai';
+import { useProfile } from '../hooks/useProfile';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
+const URL = `${import.meta.env.VITE_URL_HOST}/api`;
 interface Message {
   id?: number;
   sender: 'User' | 'AI';
@@ -70,6 +73,8 @@ const CodeWithCopy = ({ language, code }: { language: string; code: string }) =>
 };
 
 const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
+  const { getProfile } = useProfile();
+
   const [visible, setVisible] = useState(show);
   useEffect(() => {
     if (show) {
@@ -166,10 +171,44 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
     if (isAnalisis) setResult(streamedText);
   };
   
-  useEffect(()=>{
-    if(!result) return;
+  useEffect(() => {
+    if (!result || !getProfile) return;
+
     localStorage.setItem('resultRekomendasi', JSON.stringify(result));
-  }, [result])
+
+    const syncRekomendasi = async () => {
+      try {
+        const response = await axios.get(`${URL}/rekomendasi/${getProfile._id}`);
+
+        const rekomendasi = response.data;
+
+        if (rekomendasi && rekomendasi._id) {
+          await axios.put(`${URL}/rekomendasi/${rekomendasi._id}`, {
+            id_mahasiswa: getProfile._id,
+            rekomendasi: result
+          });
+        } else {
+          await axios.post(`${URL}/rekomendasi`, {
+            id_mahasiswa: getProfile._id,
+            rekomendasi: result
+          });
+        }
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          await axios.post(`${URL}/rekomendasi`, {
+            id_mahasiswa: getProfile._id,
+            rekomendasi: result
+          });
+        } else {
+          console.error('Gagal sinkronisasi rekomendasi:', error);
+        }
+      }
+    };
+
+    syncRekomendasi();
+  }, [result, getProfile]);
+
+
 
   return (
     <div className={`modal fade mt-0 ${show ? 'show d-block' : 'd-block'}`}

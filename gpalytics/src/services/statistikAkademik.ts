@@ -31,46 +31,46 @@ export async function getIPSPerSemester(id_mahasiswa: string) {
     const data = await IPK.getAll(id_mahasiswa);
     return data.map((v) => ({
         semester: v.semester.toString(),
-        ip: v.ips ?? 0,
+        ip: v.ips ?? null,
     }));
 }
 export async function getIPKPredictionData(id_mahasiswa: string) {
-  const data = await IPK.getAll(id_mahasiswa);
+    const data = await IPK.getAll(id_mahasiswa);
 
-  const filtered = data
-    .filter((v) => v.ipk !== null)
-    .sort((a, b) => a.semester - b.semester); // <-- penting!
+    const filtered = data
+        .filter((v) => v.ipk !== null)
+        .sort((a, b) => a.semester - b.semester);
 
-  if (filtered.length === 0) return [];
+    if (filtered.length === 0) return [];
 
-  const lastKnown = filtered[filtered.length - 1];
-  const deltaList: number[] = [];
+    const lastKnown = filtered[filtered.length - 1];
+    const deltaList: number[] = [];
 
-  for (let i = 1; i < filtered.length; i++) {
-    const prev = filtered[i - 1].ipk ?? 0;
-    const curr = filtered[i].ipk ?? 0;
-    deltaList.push(curr - prev);
-  }
+    for (let i = 1; i < filtered.length; i++) {
+        const prev = filtered[i - 1].ipk ?? 0;
+        const curr = filtered[i].ipk ?? 0;
+        deltaList.push(curr - prev);
+    }
 
-  const avgDelta =
-    deltaList.length > 0
-      ? deltaList.reduce((a, b) => a + b, 0) / deltaList.length
-      : 0;
+    const avgDelta =
+        deltaList.length > 0
+        ? deltaList.reduce((a, b) => a + b, 0) / deltaList.length
+        : 0;
 
-  const prediksiData = filtered.map((v) => ({
-    semester: v.semester.toString(),
-    ipk: v.ipk ?? 0,
-  }));
+    const prediksiData = filtered.map((v) => ({
+        semester: v.semester.toString(),
+        ipk: v.ipk ?? 0,
+    }));
 
-  let lastIPK = lastKnown.ipk ?? 0;
-  const lastSemester = lastKnown.semester;
+    let lastIPK = lastKnown.ipk ?? 0;
+    const lastSemester = lastKnown.semester;
 
-  for (let i = lastSemester + 1; i <= 8; i++) {
-    lastIPK = parseFloat((lastIPK + avgDelta).toFixed(2));
-    prediksiData.push({ semester: i.toString(), ipk: lastIPK });
-  }
+    for (let i = lastSemester + 1; i <= 8; i++) {
+        lastIPK = parseFloat((lastIPK + avgDelta).toFixed(2));
+        prediksiData.push({ semester: i.toString(), ipk: lastIPK });
+    }
 
-  return prediksiData;
+    return prediksiData;
 }
 
 
@@ -117,7 +117,7 @@ export async function getRegresiDataLinear(id_mahasiswa: string) {
 
     return {
         data: hasil,
-        persamaan: `y = ${b.toFixed(2)}x + ${a.toFixed(2)}`,
+        persamaan: `y = ${a.toFixed(2)} + ${b.toFixed(2)}x`,
     };
 }
 
