@@ -192,33 +192,33 @@ const StatistikAkademik = () => {
 
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
                         <h5 className="fw-semibold mb-3">Semua Nilai</h5>
-                        <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={tugasUtsUas}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-                            <YAxis domain={[nilaiMinimum? nilaiMinimum-10 : 20, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
-                            <Tooltip />
-                            <Legend verticalAlign="top" align="right" />
-                            <Line type="monotone" dataKey="tugas" stroke="#d1d1d1" strokeWidth={3} name="Tugas" />
-                            <Line type="monotone" dataKey="uts" stroke="#007bff" strokeWidth={3} name="UTS" />
-                            <Line type="monotone" dataKey="uas" stroke="#28a745" strokeWidth={3} name="UAS" />
-                            <ReferenceLine y={rataRata} stroke="#ffc107" strokeDasharray="3 3"
-                            label={{
-                              value: `Rata-rata (${rataRata})`,
-                              position: "top",
-                              fill: "#ffc107",
-                              fontSize: 15,
-                              fontWeight: "bold",
-                            }}
-                            />
-                        </LineChart>
+                        <ResponsiveContainer key={tugasUtsUas.length} width="100%" height={300}>
+                          <LineChart data={tugasUtsUas}>
+                              <CartesianGrid strokeDasharray="3 3" />
+                              <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+                              <YAxis domain={[nilaiMinimum? nilaiMinimum-10 : 20, 100]} label={{ value: "Nilai", angle: -90, position: "insideLeft" }} />
+                              <Tooltip />
+                              <Legend verticalAlign="top" align="right" />
+                              <Line type="monotone" dataKey="tugas" stroke="#d1d1d1" strokeWidth={3} name="Tugas" />
+                              <Line type="monotone" dataKey="uts" stroke="#007bff" strokeWidth={3} name="UTS" />
+                              <Line type="monotone" dataKey="uas" stroke="#28a745" strokeWidth={3} name="UAS" />
+                              <ReferenceLine y={rataRata} stroke="#ffc107" strokeDasharray="3 3"
+                              label={{
+                                value: `Rata-rata (${rataRata})`,
+                                position: "top",
+                                fill: "#ffc107",
+                                fontSize: 15,
+                                fontWeight: "bold",
+                              }}
+                              />
+                          </LineChart>
                         </ResponsiveContainer>
                     </div>
 
 
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
                       <h5 className="fw-semibold mb-3">Distribusi Nilai Mahasiswa</h5>
-                      <ResponsiveContainer width="100%" height={250}>
+                      <ResponsiveContainer key={distribusi.length} width="100%" height={250}>
                         <BarChart data={distribusi}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="range" label={{ value: "Range", position: "insideBottom", offset: -5 }} />
@@ -233,7 +233,7 @@ const StatistikAkademik = () => {
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
                       <h5 className="fw-semibold mb-3">Regresi Linier: Prediksi Nilai Akhir per Semester</h5>
 
-                      <ResponsiveContainer width="100%" height={250}>
+                      <ResponsiveContainer key={regresi.length} width="100%" height={250}>
                         <LineChart data={regresi}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
@@ -254,7 +254,7 @@ const StatistikAkademik = () => {
 
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
                       <h5 className="fw-semibold mb-3">Indeks Prestasi per Semester</h5>
-                      <ResponsiveContainer width="100%" height={250}>
+                      <ResponsiveContainer key={ips.length} width="100%" height={250}>
                         <LineChart data={ips}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />

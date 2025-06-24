@@ -15,6 +15,7 @@ type User = {
     _id: string;
     nama: string;
     email: string;
+    photo: string;
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
@@ -87,14 +88,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             </ul>
             <div className="mt-auto miniaccount">
                 <div className="d-flex align-items-center">
-                    <img src={guestImg} className="rounded-circle me-2" alt="User" />
+                    <img src={getProfile?.photo || guestImg} className="rounded-circle me-2" alt="User" />
                     <div>
                         <div className="fw-semibold">{getProfile? getProfile.nama: 'Guest'}</div>
                         <span className="badge bg-warning text-dark">User</span>
                     </div>
                 </div>
                 {getProfile ? (
-                    <a href="#" className="btn btn-outline-danger btn-sm mt-3 w-100"
+                    <a href="#" className="btn button-scale btn-outline-danger btn-sm mt-3 w-100"
                     onClick={() => {
                         localStorage.clear()
                         location.href = '/'
@@ -103,7 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <FiLogOut size={20} /> Log out
                     </a>
                 ) : (
-                    <a href="#" className="btn btn-outline-primary btn-sm mt-3 w-100"
+                    <a href="#" className="btn button-scale btn-outline-primary btn-sm mt-3 w-100"
                     onClick={() => {
                         location.href = '/signup'
                     }}

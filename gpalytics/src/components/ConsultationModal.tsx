@@ -130,6 +130,32 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
       }, 1000)
       const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       await delay(2000);
+    } else if (content === "Buatkan Jadwal Belajar 1 Minggu") {
+      setScrollTrigger((prev) => prev + 1);
+      const aiResponse: Message = { id: dataCollectingId, sender: 'AI', text: `Mengumpulkan Data...` };
+      setMessages((prev) => [...prev, aiResponse]);
+
+      const rekomendasi = JSON.parse(localStorage.getItem("rekomendasi") || "{}");
+      const dataNilai = rekomendasi.nilaiTertinggi || [];
+
+      const daftarNilai = dataNilai.map((item: any, i: number) =>
+        `${i + 1}. ${item.mataKuliah} (Semester ${item.semester}, SKS ${item.sks}) — ` +
+        `Tugas: ${item.nilaiTugas}, UTS: ${item.nilaiUTS}, UAS: ${item.nilaiUAS}, ` +
+        `Nilai Akhir: ${(+item.nilaiAkhir).toFixed(2)}`
+      ).join("\n");
+      content = `Buatkan jadwal belajar 1 minggu berdasarkan data berikut ini:\n\n${daftarNilai}`;
+
+      setTimeout(()=>{
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === dataCollectingId
+              ? { ...msg, text: '✅ Data berhasil dikumpulkan!' }
+              : msg
+          )
+        );
+      }, 1000)
+      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      await delay(2000);
     } else {
       const aiResponse: Message = { sender: 'AI', text: `` };
       setMessages((prev) => [...prev, aiResponse]);

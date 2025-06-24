@@ -14,7 +14,12 @@ export function useIPKData() {
     const [ipsMax, setIpsMax] = useState<number | null>(null);
     const [ipkMin, setIpkMin] = useState<number | null>(null);
     const [ipkMax, setIpkMax] = useState<number | null>(null);
-    const [semesterInfo, setSemesterInfo] = useState<any>({});
+    const [semesterInfo, setSemesterInfo] = useState({
+        maxIpsSemester: "-",
+        minIpsSemester: "-",
+        maxIpkSemester: "-",
+        minIpkSemester: "-"
+    });
     const [semesterTerakhir, setSemesterTerakhir] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -37,6 +42,7 @@ export function useIPKData() {
                 setIpsMax(parsed.maxIps)
                 setIpkMin(parsed.minIpk)
                 setIpkMax(parsed.maxIpk)
+                setSemesterInfo(parsed.semesterInfo)
                 setSemesterTerakhir(parsed.semesterTerakhir)
                 setIsLoading(false);
                 return;
@@ -66,11 +72,35 @@ export function useIPKData() {
             setIpkMin(minIpk);
             setIpkMax(maxIpk);
 
+            const maxIpsSemester = String(
+                result
+                .filter(r => r.ips === maxIps)
+                .sort((a, b) => Number(b.semester) - Number(a.semester))[0]?.semester ?? "-"
+            );
+            const minIpsSemester = String(
+                result
+                .filter(r => r.ips === minIps)
+                .sort((a, b) => Number(a.semester) - Number(b.semester))[0]?.semester ?? "-"
+            );
+
+            const maxIpkSemester = String(
+                result
+                .filter(r => r.ipk === maxIpk)
+                .sort((a, b) => Number(b.semester) - Number(a.semester))[0]?.semester ?? "-"
+            );
+
+            const minIpkSemester = String(
+                result
+                .filter(r => r.ipk === minIpk)
+                .sort((a, b) => Number(a.semester) - Number(b.semester))[0]?.semester ?? "-"
+            );
+
+
             setSemesterInfo({
-                maxIpsSemester: result.find(r => r.ips === maxIps)?.semester ?? "-",
-                minIpsSemester: result.find(r => r.ips === minIps)?.semester ?? "-",
-                maxIpkSemester: result.find(r => r.ipk === maxIpk)?.semester ?? "-",
-                minIpkSemester: result.find(r => r.ipk === minIpk)?.semester ?? "-",
+                maxIpsSemester,
+                minIpsSemester,
+                maxIpkSemester,
+                minIpkSemester
             });
 
             localStorage.setItem(localKey, JSON.stringify({
@@ -82,6 +112,7 @@ export function useIPKData() {
                 maxIps,
                 minIpk,
                 maxIpk,
+                semesterInfo,
                 semesterTerakhir
             }));
 

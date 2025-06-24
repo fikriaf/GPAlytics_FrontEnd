@@ -25,9 +25,9 @@ function Home() {
                     <div className="collapse navbar-collapse p-md-2" id="navbarNav">
                         <ul className="navbar-nav gap-2 my-md-0">
                             <li className="nav-item">
-                                <a className="nav-link btn btn-outline-primary px-3 d-flex align-items-center justify-content-between" href="#">
+                                <Link to={'/about'} className="nav-link btn btn-outline-primary px-3 d-flex align-items-center justify-content-between" >
                                     <span className='d-flex align-items-center gap-2'><FiInfo size={20} />About</span><FiChevronRight className='d-md-none' size={20} />
-                                </a>
+                                </Link>
                             </li>
                             <li className="nav-item">
                                 <Link to="/support-center" className="nav-link btn btn-outline-primary px-3 d-flex align-items-center justify-content-between">
@@ -40,9 +40,9 @@ function Home() {
                                 </a>
                             </li>
                             <li className="nav-item">
-                                <a className="px-3 btn btn-outline-primary rounded-md py-md-2 py-3 rounded-md-1 d-flex align-items-center gap-2" href="#">
-                                    <FiFileText size={20} /> DOCUMENTS
-                                </a>
+                                <Link to={'/docs'} className="px-3 btn btn-outline-primary rounded-md py-md-2 py-3 rounded-md-1 d-flex align-items-center gap-2">
+                                    <FiFileText size={20} /> API Docs
+                                </Link>
                             </li>
                         </ul>
                     </div>

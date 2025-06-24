@@ -241,7 +241,7 @@ const Mahasiswa = () => {
         const fetchSKS = async () => {
             if (!getProfile || !semesterTerakhir) return;
             const total = await getTotalSKS(getProfile._id);
-            setTotalSKSSemesterIni(total.semesterSaatIni);
+            setTotalSKSSemesterIni(total.totalSKS);
         };
         fetchSKS();
     }, [getProfile, semesterTerakhir]);
@@ -253,21 +253,18 @@ const Mahasiswa = () => {
 
             const { semesterSaatIni, totalSKS } = await getTotalSKS(getProfile._id);
 
-            const semuaIPK = await IPK.getAll(getProfile._id);
-            const ipkTerakhir = semuaIPK?.[semuaIPK.length - 1]?.ipk ?? 0;
-
             const hasil = prediksiLulusBerdasarkanProgres({
-            totalSKS,
-            ipk: ipkTerakhir,
-            semesterAktif: semesterSaatIni,
-            tahunMasuk: parseInt(getProfile.angkatan)
+                totalSKS,
+                ipk: ipkTerakhir?? 0,
+                semesterAktif: semesterSaatIni,
+                tahunMasuk: parseInt(getProfile.angkatan)
             });
 
             setPrediksiLulus(hasil);
         };
 
         fetchPrediksi();
-    }, [getProfile]);
+    }, [getProfile, listNilaiId]);
 
     return (
         <div className="mahasiswa container-fluid min-vh-100 bg-light">
@@ -662,9 +659,9 @@ const Mahasiswa = () => {
                         </div>
                         <div className="col-md-3">
                             <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 rounded shadow-sm p-3 text-center border-bottom border-success border-3">
-                                <h6 className='m-1'>Jumlah SKS Saat Ini</h6>
-                                <h2 className='m-1'>{totalSKSSemesterIni?? '__'} SKS</h2>
-                                <p className="text-muted m-1 small">Total SKS semester {semesterTerakhir}</p>
+                                <h6 className='m-1'>Jumlah SKS</h6>
+                                <h2 className='m-1'>{totalSKSSemesterIni?? '__'}<span className="text-muted fs-5"> / 144</span></h2>
+                                <p className="text-muted m-1 small">Sisa semester: {144 - totalSKSSemesterIni} sks</p>
                             </div>
                         </div>
                         <div className="col-md-3">

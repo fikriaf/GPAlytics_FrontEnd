@@ -84,7 +84,7 @@ export async function getTotalSKS(id_mahasiswa: string): Promise<{
     totalSKS: number;
     }> {
     try {
-        const daftarNilai = await getListNilaiTertinggi(id_mahasiswa);
+        const daftarNilai = await getListNilai(id_mahasiswa);
 
         if (!daftarNilai.length) {
         return {

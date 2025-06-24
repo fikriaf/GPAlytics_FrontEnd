@@ -1,0 +1,28 @@
+
+.carousel-indicators button {
+    bottom: -3rem !important;
+    width: 2rem !important;
+    height: 0.5rem !important;
+    border-radius: 0.5rem;
+    background-color: #000;
+    opacity: 1;
+}
+.carousel-indicators .active {
+    opacity: 1;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    width: 3rem;
+    height: 3rem;
+    background-size: 100% 100%;
+    filter: drop-shadow(0 0 1px black);
+}
+
+.carousel-control-prev {
+    left: -3rem;
+}
+
+.carousel-control-next {
+    right: -3rem;
+}

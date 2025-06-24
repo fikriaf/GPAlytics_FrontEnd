@@ -38,7 +38,7 @@ const GPALyticsDashboard = () => {
         semesterInfo,
     } = useIPKData();
     
-    let domainMin = ipsMin ? parseFloat((ipsMin - 0.5).toFixed(2)) : ipsMin
+    let domainMin = ipsMin ? parseFloat((ipsMin - 0.2).toFixed(2)) : ipsMin
 
     useEffect(() => {
         axios.get(`${URL}/mata-kuliah`)
@@ -93,9 +93,6 @@ const GPALyticsDashboard = () => {
     }, [localStorage.getItem('resultRekomendasi')]);
 
 
-    useEffect(() => {
-
-    })
     return (
         <>
             <div className="dashboard container-fluid min-vh-100 bg-light">
@@ -233,8 +230,8 @@ const GPALyticsDashboard = () => {
                                         </LineChart>
                                     </ResponsiveContainer>
                                     <div className="d-flex justify-content-between mt-2">
-                                        <small>IPS Tertinggi/Sem: {ipsMax} - {semesterInfo.semesterMaxips}</small>
-                                        <small>IPK Tertinggi/Thn: {ipkMax} - 2023</small>
+                                        <small>IPS Tertinggi/Sem: <strong>{ipsMax}/{semesterInfo.maxIpsSemester}</strong></small>
+                                        <small>IPK Tertinggi/Sem: <strong>{ipkMax}/{semesterInfo.maxIpkSemester}</strong></small>
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +247,7 @@ const GPALyticsDashboard = () => {
                                     <p className="text-muted small mb-2">Siap bantu kamu kapan saja!</p>
 
                                     <div className='d-flex flex-column gap-1'>
-                                        <button className="rounded button-scale p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}} 
+                                        <button className="rounded button-scale p-1 small btn btn-outline-primary text-dark" style={{ fontStyle: 'italic'}} 
                                         onClick={() => {
                                             setShowModal(true)
                                             runHandleSend("Analisis data akademik saya!");
@@ -258,7 +255,7 @@ const GPALyticsDashboard = () => {
                                         >
                                         “Analisis Data Akademik Saya”
                                         </button>
-                                        <button className="rounded button-scale p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}
+                                        <button className="rounded button-scale p-1 small btn btn-outline-primary text-dark" style={{ fontStyle: 'italic'}}
                                         onClick={() => {
                                             setShowModal(true)
                                             runHandleSend("Buatkan Jadwal Belajar 1 Minggu");
