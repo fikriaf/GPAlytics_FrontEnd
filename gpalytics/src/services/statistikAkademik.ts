@@ -31,7 +31,7 @@ export async function getIPSPerSemester(id_mahasiswa: string) {
     const data = await IPK.getAll(id_mahasiswa);
     return data.map((v) => ({
         semester: v.semester.toString(),
-        ip: v.ips ?? null,
+        ips: v.ips ?? null,
     }));
 }
 export async function getIPKPredictionData(id_mahasiswa: string) {
@@ -80,20 +80,17 @@ export async function getRegresiDataLinear(id_mahasiswa: string) {
     const data = await getListNilaiTertinggi(id_mahasiswa);
     const semesterMap: Record<number, number[]> = {};
 
-    // Kelompokkan nilai akhir per semester
     data.forEach((item) => {
         if (!semesterMap[item.semester]) semesterMap[item.semester] = [];
         semesterMap[item.semester].push(item.nilaiAkhir);
     });
 
-    // Hitung rata-rata nilai akhir per semester
     const nilaiSemester = Object.entries(semesterMap).map(([s, list]) => {
         const semester = parseInt(s);
         const avg = list.reduce((a, b) => a + b, 0) / list.length;
         return { semester, nilai: parseFloat(avg.toFixed(2)) };
     });
 
-    // Hitung regresi linier: y = a + b * x
     const n = nilaiSemester.length;
     const sumX = nilaiSemester.reduce((sum, d) => sum + d.semester, 0);
     const sumY = nilaiSemester.reduce((sum, d) => sum + d.nilai, 0);
@@ -103,7 +100,6 @@ export async function getRegresiDataLinear(id_mahasiswa: string) {
     const b = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const a = (sumY - b * sumX) / n;
 
-    // Tambahkan prediksi hingga semester 8
     const hasil = [];
     for (let i = 1; i <= 8; i++) {
         const existing = nilaiSemester.find(d => d.semester === i);

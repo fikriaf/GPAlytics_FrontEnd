@@ -22,7 +22,7 @@ import {
 
 
 type DistribusiItem = { range: string; jumlah: number };
-type IPSItem = { semester: string; ip: number | null };
+type IPSItem = { semester: string; ips: number | null };
 type IPKPrediksiItem = { semester: string; ipk: number };
 type RegresiItem = { semester: number; nilai: number; prediksi?: number };
 type NilaiRataItem = { semester: number; tugas: number; uts: number; uas: number };
@@ -137,7 +137,7 @@ const StatistikAkademik = () => {
 
     const semuaNilai = tugasUtsUas.flatMap(item => [item.tugas, item.uts, item.uas]);
     const nilaiMinimum = Math.floor(Math.min(...semuaNilai));
-    const semuaIPS = ips.flatMap(item => item.ip ? [item.ip] : []);
+    const semuaIPS = ips.flatMap(item => item.ips ? [item.ips] : []);
     const nilaiMinimumIPS = Math.min(...semuaIPS);
     const semuaIPK = prediksiIPK.flatMap(item => item.ipk ? [item.ipk] : []);
     const nilaiMinimumIPK = Math.min(...semuaIPK);
@@ -202,12 +202,12 @@ const StatistikAkademik = () => {
                             <Line type="monotone" dataKey="tugas" stroke="#d1d1d1" strokeWidth={3} name="Tugas" />
                             <Line type="monotone" dataKey="uts" stroke="#007bff" strokeWidth={3} name="UTS" />
                             <Line type="monotone" dataKey="uas" stroke="#28a745" strokeWidth={3} name="UAS" />
-                            <ReferenceLine y={rataRata} stroke="red" strokeDasharray="3 3"
+                            <ReferenceLine y={rataRata} stroke="#ffc107" strokeDasharray="3 3"
                             label={{
                               value: `Rata-rata (${rataRata})`,
                               position: "top",
-                              fill: "red",
-                              fontSize: 12,
+                              fill: "#ffc107",
+                              fontSize: 15,
                               fontWeight: "bold",
                             }}
                             />
@@ -229,20 +229,7 @@ const StatistikAkademik = () => {
                       </ResponsiveContainer>
                     </div>
 
-
-                    <div className="bg-white rounded shadow-sm p-4 mb-2">
-                      <h5 className="fw-semibold mb-3">Indeks Prestasi per Semester</h5>
-                      <ResponsiveContainer width="100%" height={250}>
-                        <LineChart data={ips}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
-                          <YAxis domain={[nilaiMinimumIPS?parseFloat((nilaiMinimumIPS-0.2).toFixed(2)):2, 4]} label={{ value: "IPK", angle: -90, position: "insideLeft" }} />
-                          <Tooltip />
-                          <Line type="monotone" dataKey="ip" stroke="#ffc107" strokeWidth={3} dot={{ r: 5 }} />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-
+                    
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
                       <h5 className="fw-semibold mb-3">Regresi Linier: Prediksi Nilai Akhir per Semester</h5>
 
@@ -261,6 +248,21 @@ const StatistikAkademik = () => {
                       <div className="mt-3 text-muted large fw-bold">
                         Persamaan regresi: <code>{persamaan}</code> <br />
                       </div>
+                    </div>
+
+
+
+                    <div className="bg-white rounded shadow-sm p-4 mb-2">
+                      <h5 className="fw-semibold mb-3">Indeks Prestasi per Semester</h5>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <LineChart data={ips}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="semester" label={{ value: "Semester", position: "insideBottom", offset: -5 }} />
+                          <YAxis domain={[nilaiMinimumIPS?parseFloat((nilaiMinimumIPS-0.2).toFixed(2)):2, 4]} label={{ value: "IPS", angle: -90, position: "insideLeft" }} />
+                          <Tooltip />
+                          <Line type="monotone" dataKey="ips" stroke="#ffc107" strokeWidth={3} dot={{ r: 5 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
                     </div>
 
 
