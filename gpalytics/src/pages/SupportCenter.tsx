@@ -178,7 +178,7 @@ const SupportCenter = () => {
                     <div className='col-md-6'>
                         <div className='buttonMenu d-grid gap-2'>
                             <div className='btnPanduan'>
-                                <button className='btn py-3 btn-primary w-100' onClick={() => setActivePage('panduan')} 
+                                <button className='btn button-scale-text py-3 btn-primary w-100' onClick={() => setActivePage('panduan')} 
                                 style={{
                                     backgroundColor: activePage === 'panduan' ? 'rgb(255, 255, 255)' : '',
                                     color: activePage === 'panduan' ? '#000000' : '',
@@ -188,7 +188,7 @@ const SupportCenter = () => {
                                 </button>
                             </div>
                             <div className='btnFAQ'>
-                                <button className='btn py-3 btn-primary w-100' onClick={() => setActivePage('faq')} 
+                                <button className='btn button-scale-text py-3 btn-primary w-100' onClick={() => setActivePage('faq')} 
                                 style={{
                                     backgroundColor: activePage === 'faq' ? 'rgb(255, 255, 255)' : '',
                                     color: activePage === 'faq' ? '#000000' : '',
@@ -198,7 +198,7 @@ const SupportCenter = () => {
                                 </button>
                             </div>
                             <div className='btnKebijakan'>
-                                <button className='btn py-3 btn-primary w-100' onClick={() => setActivePage('kebijakan')} 
+                                <button className='btn py-3 button-scale-text btn-primary w-100' onClick={() => setActivePage('kebijakan')} 
                                 style={{
                                     backgroundColor: activePage === 'kebijakan' ? 'rgb(255, 255, 255)' : '',
                                     color: activePage === 'kebijakan' ? '#000000' : '',
@@ -208,7 +208,7 @@ const SupportCenter = () => {
                                 </button>
                             </div>
                             <div className='btnKontak'>
-                                <button className='btn py-3 btn-primary w-100' onClick={() => setActivePage('kontak')} 
+                                <button className='btn button-scale-text py-3 btn-primary w-100' onClick={() => setActivePage('kontak')} 
                                     style={{
                                     backgroundColor: activePage === 'kontak' ? 'rgb(255, 255, 255)' : '',
                                     color: activePage === 'kontak' ? '#000000' : '',
@@ -351,13 +351,13 @@ const SupportCenter = () => {
                                 <div className="card-body">
                                     {/* Tombol Sosial */}
                                     <div className="mb-3 d-flex flex-column gap-2">
-                                        <a href="https://wa.me/6281234567890" className="btn btn-success" target="_blank" rel="noopener noreferrer">
+                                        <a href="https://wa.me/6281234567890" className="btn button-scale btn-success" target="_blank" rel="noopener noreferrer">
                                         <FiPhone className="me-2" /> WhatsApp
                                         </a>
-                                        <a href="https://github.com/username" className="btn btn-dark" target="_blank" rel="noopener noreferrer">
+                                        <a href="https://github.com/username" className="btn button-scale btn-dark" target="_blank" rel="noopener noreferrer">
                                         <FiGithub className="me-2" /> GitHub
                                         </a>
-                                        <a href="https://linkedin.com/in/username" className="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                                        <a href="https://linkedin.com/in/username" className="btn button-scale btn-primary" target="_blank" rel="noopener noreferrer">
                                         <FiLinkedin className="me-2" /> LinkedIn
                                         </a>
                                     </div>
@@ -373,7 +373,7 @@ const SupportCenter = () => {
                                         <div className="mb-2">
                                         <textarea className="form-control" rows={3} placeholder="Pesan Anda..." required></textarea>
                                         </div>
-                                        <button type="submit" className="btn btn-primary w-100">
+                                        <button type="submit" className="btn button-scale btn-primary w-100">
                                         <FiMessageCircle className="me-2" /> Kirim Pesan
                                         </button>
                                     </form>

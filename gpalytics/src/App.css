@@ -153,8 +153,8 @@
 }
 
 .button-scale:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    transform: scale(1.05) !important;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1) !important;
 }
 
 .button-scale-m {
@@ -162,5 +162,13 @@
 }
 
 .button-scale-m:hover {
-    transform: scale(1.1);
+    transform: scale(1.1) !important;
+}
+
+.button-scale-text {
+    transition: font-size 0.2s ease !important;
+}
+
+.button-scale-text:hover {
+    font-size: 1.2rem !important;
 }

@@ -10,6 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/Dashboard.css'
 import Sidebar from '../components/Sidebar';
 import ConsultationModal from '../components/ConsultationModal';
+import { runHandleSend } from '../components/sendHandler';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FiGrid } from 'react-icons/fi';
@@ -249,16 +250,36 @@ const GPALyticsDashboard = () => {
                                     <p className="text-muted small mb-2">Siap bantu kamu kapan saja!</p>
 
                                     <div className='d-flex flex-column gap-1'>
-                                        <button className="rounded p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}>
+                                        <button className="rounded button-scale p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}} 
+                                        onClick={() => {
+                                            setShowModal(true)
+                                            runHandleSend("Analisis data akademik saya!");
+                                        }}
+                                        >
                                         “Analisis Data Akademik Saya”
                                         </button>
-                                        <button className="rounded p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}>
-                                        “Buatkan Jadwal Belajar 1 Mingggu”
+                                        <button className="rounded button-scale p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}
+                                        onClick={() => {
+                                            setShowModal(true)
+                                            runHandleSend("Buatkan Jadwal Belajar 1 Minggu");
+                                        }}
+                                        >
+                                        “Buatkan Jadwal Belajar 1 Minggu”
                                         </button>
-                                        <button className="rounded p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}>
+                                        <button className="rounded button-scale p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}} 
+                                        onClick={() => {
+                                            setShowModal(true)
+                                            runHandleSend("Jelaskan apa itu Neural Network?");
+                                        }}
+                                        >
                                         “Jelaskan apa itu Neural Network?”
                                         </button>
-                                        <button className="rounded p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}>
+                                        <button className="rounded button-scale p-1 small text-muted btn btn-outline-primary" style={{ fontStyle: 'italic'}}
+                                        onClick={() => {
+                                            setShowModal(true)
+                                            runHandleSend("Jelaskan useState dan useEffect pada React");
+                                        }}
+                                        >
                                         “Jelaskan useState dan useEffect pada React”
                                         </button>
                                     </div>

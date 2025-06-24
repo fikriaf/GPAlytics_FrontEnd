@@ -4,6 +4,7 @@ import { FiSend } from 'react-icons/fi';
 import './styles/modal.css'
 import { streamVercelAI } from '../services/ai';
 import { useProfile } from '../hooks/useProfile';
+import { setHandleSend } from './sendHandler';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -78,11 +79,11 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
   const [visible, setVisible] = useState(show);
   useEffect(() => {
     if (show) {
-    setVisible(true);
-  } else {
-    setTimeout(() => setVisible(false), 0);
-  }
-}, [show]);
+      setVisible(true);
+    } else {
+      setTimeout(() => setVisible(false), 0);
+    }
+  }, [show]);
 
   const [selectedLLM, setSelectedLLM] = useState('deepseek-r1-distill-llama-70b');
   const [selectedLabel, setSelectedLabel] = useState('DeepSeek-R1 70B')
@@ -98,7 +99,7 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [scrollTrigger]);
 
-  const handleSend = async (text?:String) => {
+  const handleSend = async (text?:string) => {
     let content = text?.trim() || message.trim();
 
     if (!content) return;
@@ -208,7 +209,9 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
     syncRekomendasi();
   }, [result, getProfile]);
 
-
+  useEffect(() => {
+    setHandleSend(handleSend);
+  }, []);
 
   return (
     <div className={`modal fade mt-0 ${show ? 'show d-block' : 'd-block'}`}
@@ -240,7 +243,7 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
               ].map((model) => (
                 <button
                   key={model.value}
-                  className={`btn btn-sm ${selectedLLM === model.value ? 'btn-info' : 'btn-outline-info'}`}
+                  className={`btn button-scale-m btn-sm ${selectedLLM === model.value ? 'btn-info' : 'btn-outline-info'}`}
                   onClick={() => {
                     setSelectedLLM(model.value);
                     setSelectedLabel(model.label);
@@ -328,13 +331,13 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
               }}
             />
             <div className="w-100 d-flex align-items-center justify-content-between">
-              <button className="btn btn-outline-light" onClick={onClose}>Tutup</button>
+              <button className="btn button-scale btn-outline-light" onClick={onClose}>Tutup</button>
               <div className='mx-3 text-secondary d-md-flex d-grid justify-content-center gap-2' style={{ fontSize: '0.8rem' }}>
                 <span className=''>Send <strong>[ Enter ]</strong></span>
                 <span className='d-md-block d-none'>|</span>
                 <span className=''>Multilines <strong>[ Shift + Enter ]</strong></span>
               </div>
-              <button className="btn btn-info fw-bold text-dark border-glow d-flex align-items-center"
+              <button className="btn button-scale btn-info fw-bold text-dark border-glow d-flex align-items-center"
                 onClick={() => handleSend(message)}
                 disabled={!message.trim()}>
                 Kirim <FiSend className="ms-2" />
