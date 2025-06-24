@@ -6,6 +6,7 @@ import { useIPKData } from '../hooks/useIPK';
 import { getListNilaiTertinggi } from '../services/Nilai';
 import type { NilaiMatkulDenganAkhir } from '../services/Nilai';
 import { useBobotMutu } from '../hooks/useBobot';
+import { getRekomendasi } from '../services/Rekomendasi';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/Dashboard.css'
 import Sidebar from '../components/Sidebar';
@@ -79,18 +80,33 @@ const GPALyticsDashboard = () => {
     }, [getProfile, Allmatkul, listNilai]);
 
 
-
     const [resultRekomendasi, setResultRekomendasi] = useState<any>(null);
     useEffect(() => {
+        if (!getProfile?._id) return;
+
         const stored = localStorage.getItem('resultRekomendasi');
-        if (!stored) return;
-        try {
+
+        if (stored) {
+            try {
             const parsed = JSON.parse(stored);
-            setResultRekomendasi(parsed);
-        } catch (error) {
-            console.error('Gagal mem-parse resultRekomendasi dari localStorage:', error);
+                setResultRekomendasi(parsed);
+            } catch (error) {
+                console.error('Gagal mem-parse resultRekomendasi dari localStorage:', error);
+            }
+        } else {
+            (async () => {
+            try {
+                const data = await getRekomendasi(getProfile?._id);
+                if (data?.rekomendasi) {
+                    setResultRekomendasi(data.rekomendasi);
+                    localStorage.setItem('resultRekomendasi', JSON.stringify(data.rekomendasi));
+                }
+            } catch (err) {
+                console.error("Gagal mengambil rekomendasi:", err);
+            }
+            })();
         }
-    }, [localStorage.getItem('resultRekomendasi')]);
+    }, [getProfile?._id]);
 
 
     return (
