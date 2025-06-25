@@ -292,12 +292,12 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
                   <div className="row justify-content-center g-3">
                     {[
                       {
-                        icon: '📅',
-                        text: 'Buatkan jadwal belajar 1 minggu',
-                      },
-                      {
                         icon: '🧠',
                         text: 'Jelaskan apa itu neural network?',
+                      },
+                      {
+                        icon: '📅',
+                        text: 'Buatkan Jadwal Belajar 1 Minggu',
                       },
                       {
                         icon: '💡',
