@@ -661,7 +661,7 @@ const Mahasiswa = () => {
                             <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 rounded shadow-sm p-3 text-center border-bottom border-success border-3">
                                 <h6 className='m-1'>Jumlah SKS</h6>
                                 <h2 className='m-1'>{totalSKSSemesterIni?? '__'}<span className="text-muted fs-5"> / 144</span></h2>
-                                <p className="text-muted m-1 small">Sisa semester: {144 - totalSKSSemesterIni} sks</p>
+                                <p className="text-muted m-1 small">Tersisa: {144 - totalSKSSemesterIni} sks</p>
                             </div>
                         </div>
                         <div className="col-md-3">
