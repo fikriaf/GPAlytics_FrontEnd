@@ -217,7 +217,7 @@ const StatistikAkademik = () => {
 
 
                     <div className="bg-white rounded shadow-sm p-4 mb-2">
-                      <h5 className="fw-semibold mb-3">Distribusi Nilai Mahasiswa</h5>
+                      <h5 className="fw-semibold mb-3">Distribusi Nilai</h5>
                       <ResponsiveContainer key={distribusi.length} width="100%" height={250}>
                         <BarChart data={distribusi}>
                           <CartesianGrid strokeDasharray="3 3" />
