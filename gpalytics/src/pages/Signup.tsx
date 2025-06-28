@@ -143,12 +143,12 @@ function Signup() {
                                         Saya menyetujui <a href="/kebijakan" className="text-decoration-none text-multicolor">Kebijakan</a> dan <a href="/privasi" className="text-decoration-none text-multicolor">Privasi</a>
                                     </label>
                                 </div>
-                                <button type="submit" className="btn btn-form w-100 mt-2 shadow text-light"><FiLogIn /> Sign Up</button>
+                                <button type="submit" className="btn button-scale btn-form w-100 mt-2 shadow text-light"><FiLogIn /> Sign Up</button>
                             </form>
 
                             <div className='d-grid gap-3 align-items-center justify-content-center my-5 py-3'>
                                 <div className='loginGoogle'>
-                                    <a href="" className='btn btn-outline-light d-flex gap-2 align-items-center'>
+                                    <a href="" className='btn button-scale btn-outline-light d-flex gap-2 align-items-center'>
                                         <div className='logoGoogle d-flex align-items-center'>
                                             <img src={googleImg} alt="Google" style={{ width: '20px' }} />
                                         </div>
