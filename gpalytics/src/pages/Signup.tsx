@@ -80,7 +80,7 @@ function Signup() {
                         <div className='formnya'>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3 mt-3">
-                                    <label htmlFor="name" className="form-label">Name:</label>
+                                    <label htmlFor="name" className="form-label">Name</label>
                                     <input
                                     type="text"
                                     className="form-control bg-transparent text-white"
@@ -93,7 +93,7 @@ function Signup() {
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">Email:</label>
+                                    <label htmlFor="email" className="form-label">Email</label>
                                     <input
                                     type="email"
                                     className="form-control bg-transparent text-white"
@@ -106,7 +106,7 @@ function Signup() {
                                     />
                                 </div>
                                 <div className="mb-3 position-relative">
-                                    <label htmlFor="pwd" className="form-label">Password:</label>
+                                    <label htmlFor="pwd" className="form-label">Password</label>
                                     <input
                                     type={showPassword ? 'text' : 'password'}
                                     className="form-control bg-transparent text-white"

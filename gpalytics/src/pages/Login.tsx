@@ -80,7 +80,7 @@ function Login() {
                         <div className='formnya'>
                             <form onSubmit={handleSubmit}>
                                 <div className="mb-3 mt-3">
-                                    <label htmlFor="email" className="form-label">Email:</label>
+                                    <label htmlFor="email" className="form-label">Email</label>
                                     <input
                                     type="email"
                                     className="form-control bg-transparent text-white"
@@ -93,7 +93,7 @@ function Login() {
                                     />
                                 </div>
                                 <div className="mb-3 position-relative">
-                                    <label htmlFor="pwd" className="form-label">Password:</label>
+                                    <label htmlFor="pwd" className="form-label">Password</label>
                                     <input
                                     type={showPassword ? 'text' : 'password'}
                                     className="form-control bg-transparent text-white"
@@ -132,7 +132,7 @@ function Login() {
                                     <FiLogIn  /> Log In
                                 </button>
                             </form>
-
+                            <hr />
                             <div className='d-grid gap-3 align-items-center justify-content-center my-5 py-3'>
                                 <div className='loginGoogle'>
                                     <a href="" className='btn btn-outline-light d-flex gap-2 align-items-center'>
