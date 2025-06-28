@@ -164,7 +164,7 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
     setMessages((prev) =>
       prev.map((msg) =>
         msg.id === dataCollectingId
-          ? { ...msg, text: 'Thinking...' }
+          ? { ...msg, text: 'Analyzing...' }
           : msg
       )
     );
