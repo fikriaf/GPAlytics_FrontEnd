@@ -183,7 +183,7 @@ const Documents: React.FC = () => {
                   className={`btn btn-sm button-scale ${
                     lang === l ? "btn-primary" : "btn-outline-primary"
                   }`}
-                  onClick={() => setLang(l as "curl" | "python" | "js")}
+                  onClick={() => setLang(l as "python" | "js" | "curl")}
                 >
                   {l.toUpperCase()}
                 </button>
