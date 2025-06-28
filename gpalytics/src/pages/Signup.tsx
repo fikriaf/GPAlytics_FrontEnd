@@ -38,6 +38,7 @@ function Signup() {
                 return;
             }
             showSuccess('Selamat Datang di GPAlytics!')
+            localStorage.clear()
             localStorage.setItem('user', JSON.stringify(res.data));
             setForm({ nama: '', email: '', password: '' });
             setTimeout(() => {

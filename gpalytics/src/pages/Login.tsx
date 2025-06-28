@@ -34,6 +34,7 @@ function Login() {
             const user = res.data
             if (user.password === form.password) {
                 showSuccess('Login berhasil!')
+                localStorage.clear()
                 localStorage.setItem('user', JSON.stringify(user))
                 setTimeout(() => {
                     navigate('/dashboard');
