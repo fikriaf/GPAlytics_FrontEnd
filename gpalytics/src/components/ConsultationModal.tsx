@@ -154,8 +154,6 @@ const ConsultationModal: React.FC<Props> = ({ show, onClose }) => {
           )
         );
       }, 1000)
-      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-      await delay(2000);
     } else {
       const aiResponse: Message = { sender: 'AI', text: `` };
       setMessages((prev) => [...prev, aiResponse]);
