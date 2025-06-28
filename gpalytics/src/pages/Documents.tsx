@@ -4,107 +4,37 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { FiArrowLeft } from "react-icons/fi";
-
+import { endpointGroups } from "../components/endpointGroups";
 const HOST = "https://gpalyticsbackend-production.up.railway.app";
 
-const endpointGroups = [
-  {
-    title: "Mahasiswa",
-    endpoints: [
-        { name: "Ambil Semua Mahasiswa", method: "GET", path: "/api/mahasiswa" },
-        { name: "Ambil Mahasiswa Berdasarkan Email", method: "GET", path: "/api/mahasiswa/:email" },
-        { name: "Tambah Mahasiswa", method: "POST", path: "/api/mahasiswa" },
-        { name: "Update Mahasiswa", method: "PUT", path: "/api/mahasiswa/:email" },
-        { name: "Hapus Mahasiswa", method: "DELETE", path: "/api/mahasiswa/:email" }
-      ]
-  },
-  {
-    title: "Mata Kuliah",
-    endpoints: [
-      { name: "Ambil Semua Mata Kuliah", method: "GET", path: "/api/mata-kuliah" },
-      { name: "Ambil Mata Kuliah Berdasarkan Kode", method: "GET", path: "/api/mata-kuliah/:code_mk" },
-      { name: "Tambah Mata Kuliah", method: "POST", path: "/api/mata-kuliah" },
-      { name: "Perbarui Data Mata Kuliah", method: "PUT", path: "/api/mata-kuliah/:code_mk" },
-      { name: "Hapus Mata Kuliah", method: "DELETE", path: "/api/mata-kuliah/:code_mk" }
-    ]
-  },
-  {
-    title: "Nilai",
-    endpoints: [
-      { name: "Ambil Semua Nilai Mahasiswa", method: "GET", path: "/api/nilai/all" },
-      { name: "Tambah Nilai", method: "POST", path: "/api/nilai" },
-      { name: "Edit Nilai", method: "PUT", path: "/api/nilai" },
-      { name: "Hapus Nilai", method: "DELETE", path: "/api/nilai" }
-    ]
-  },
-  {
-    title: "Rekomendasi",
-    endpoints: [
-      { name: "Ambil Semua Rekomendasi", method: "GET", path: "/api/rekomendasi" },
-      { name: "Tambah Rekomendasi", method: "POST", path: "/api/rekomendasi" },
-      { name: "Ambil Rekomendasi Berdasarkan ID", method: "GET", path: "/api/rekomendasi/:id" },
-      { name: "Edit Rekomendasi", method: "PUT", path: "/api/rekomendasi/:id" }
-    ]
-  },
-  {
-    title: "Analisis",
-    endpoints: [
-      { name: "Ambil Semua Analisis", method: "GET", path: "/api/analisis" },
-      { name: "Tambah Analisis", method: "POST", path: "/api/analisis" },
-      { name: "Ambil Analisis Berdasarkan ID", method: "GET", path: "/api/analisis/:id" },
-      { name: "Edit Analisis", method: "PUT", path: "/api/analisis/:id" }
-    ]
-  },
-  {
-    title: "IP/IPK",
-    endpoints: [
-      { name: "Ambil Data IPK Mahasiswa", method: "GET", path: "/api/ip/ipk" },
-      { name: "Ambil Data IPS Mahasiswa", method: "GET", path: "/api/ip/ips" }
-    ]
-  },
-];
 
 const Documents: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState(0);
   const [selectedEndpoint, setSelectedEndpoint] = useState(0);
   const [lang, setLang] = useState<"curl" | "python" | "js">("python");
 
-  const generateCode = (method: string, path: string, name: string) => {
+  const generateCode = (method: string, path: string, endpoint: any) => {
     const fullPath = `${HOST}${path.replace(/:[^/]+/g, "value")}`;
-
-    // Daftar body per endpoint name
-    const bodies: Record<string, string> = {
-      "Tambah Mahasiswa": `{ "email": "example@mail.com", "nama": "Budi", "angkatan": 2022 }`,
-      "Update Mahasiswa": `{ "nama": "Nama Baru", "angkatan": 2021 }`,
-      "Tambah Mata Kuliah": `{ "code_mk": "IF101", "nama_mk": "Algoritma", "sks": 3 }`,
-      "Tambah Nilai": `{ "id_mahasiswa": "value", "id_mk": "value", "tipe_nilai": "uts", "nilai": 85, "semester": 2 }`,
-      "Hapus Nilai": `{ "id_nilai": "value" }`,
-      "Edit Nilai": `{ "id_nilai": "value", "nilai": 95 }`,
-      "Tambah Analisis": `{ "id_mahasiswa": "value", "data": { "kesimpulan": "Bagus" } }`,
-      "Tambah Rekomendasi": `{ "id_mahasiswa": "value", "rekomendasi": ["Sistem Basis Data", "Statistika"] }`,
-      // default
-      "default": `{ "id_mahasiswa": "value" }`
-    };
-
-    const body = bodies[name] ?? bodies["default"];
+    const body = endpoint.body ? JSON.stringify(endpoint.body, null, 2) : null;
 
     switch (lang) {
       case "python":
         return `import requests\n\nresponse = requests.${method.toLowerCase()}("${fullPath}"${
-          method !== "GET" ? `,\n    json=${body}\n` : ""
+          body ? `,\n    json=${body}\n` : ""
         })\nprint(response.json())`;
 
       case "curl":
         return `curl -X ${method} "${fullPath}" \\\n  -H "Content-Type: application/json"${
-          method !== "GET" ? ` \\\n  -d '${body}'` : ""
+          body ? ` \\\n  -d '${body}'` : ""
         }`;
 
       case "js":
         return `fetch("${fullPath}", {\n  method: "${method}",\n  headers: { "Content-Type": "application/json" }${
-          method !== "GET" ? `,\n  body: JSON.stringify(${body})` : ""
+          body ? `,\n  body: JSON.stringify(${body})` : ""
         }\n}).then(res => res.json()).then(console.log);`;
     }
   };
+
 
   const [copied, setCopied] = useState(false);
   
@@ -227,6 +157,25 @@ const Documents: React.FC = () => {
                   endpointGroups[selectedGroup].endpoints[selectedEndpoint].name
                 )}
               </SyntaxHighlighter>
+              {endpointGroups[selectedGroup].endpoints[selectedEndpoint].body && (
+                <div className="m-3">
+                  <h6>Body:</h6>
+                  <div className="position-relative my-3 border rounded text-dark overflow-hidden">
+                    <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
+                      <span className="text-light">json</span>
+                    </div>
+                    <pre className="rounded">
+                      <SyntaxHighlighter
+                        language="json"
+                        style={oneDark}
+                        customStyle={{ margin: 0, backgroundColor: 'dark' }}
+                      >
+                      {JSON.stringify(endpointGroups[selectedGroup].endpoints[selectedEndpoint].body, null, 2)}
+                      </SyntaxHighlighter>
+                    </pre>
+                    </div>
+                </div>
+              )}
             </div>
 
             {/* Navigasi endpoint */}
