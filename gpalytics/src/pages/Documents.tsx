@@ -67,44 +67,58 @@ const endpointGroups = [
 const Documents: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState(0);
   const [selectedEndpoint, setSelectedEndpoint] = useState(0);
-  const [lang, setLang] = useState<"curl" | "python" | "js">("curl");
+  const [lang, setLang] = useState<"curl" | "python" | "js">("python");
 
   const generateCode = (method: string, path: string, name: string) => {
-  const fullPath = `${HOST}${path.replace(/:[^/]+/g, "value")}`;
+    const fullPath = `${HOST}${path.replace(/:[^/]+/g, "value")}`;
 
-  // Daftar body per endpoint name
-  const bodies: Record<string, string> = {
-    "Tambah Mahasiswa": `{ "email": "example@mail.com", "nama": "Budi", "angkatan": 2022 }`,
-    "Update Mahasiswa": `{ "nama": "Nama Baru", "angkatan": 2021 }`,
-    "Tambah Mata Kuliah": `{ "code_mk": "IF101", "nama_mk": "Algoritma", "sks": 3 }`,
-    "Tambah Nilai": `{ "id_mahasiswa": "value", "id_mk": "value", "tipe_nilai": "uts", "nilai": 85, "semester": 2 }`,
-    "Hapus Nilai": `{ "id_nilai": "value" }`,
-    "Edit Nilai": `{ "id_nilai": "value", "nilai": 95 }`,
-    "Tambah Analisis": `{ "id_mahasiswa": "value", "data": { "kesimpulan": "Bagus" } }`,
-    "Tambah Rekomendasi": `{ "id_mahasiswa": "value", "rekomendasi": ["Sistem Basis Data", "Statistika"] }`,
-    // default
-    "default": `{ "id_mahasiswa": "value" }`
+    // Daftar body per endpoint name
+    const bodies: Record<string, string> = {
+      "Tambah Mahasiswa": `{ "email": "example@mail.com", "nama": "Budi", "angkatan": 2022 }`,
+      "Update Mahasiswa": `{ "nama": "Nama Baru", "angkatan": 2021 }`,
+      "Tambah Mata Kuliah": `{ "code_mk": "IF101", "nama_mk": "Algoritma", "sks": 3 }`,
+      "Tambah Nilai": `{ "id_mahasiswa": "value", "id_mk": "value", "tipe_nilai": "uts", "nilai": 85, "semester": 2 }`,
+      "Hapus Nilai": `{ "id_nilai": "value" }`,
+      "Edit Nilai": `{ "id_nilai": "value", "nilai": 95 }`,
+      "Tambah Analisis": `{ "id_mahasiswa": "value", "data": { "kesimpulan": "Bagus" } }`,
+      "Tambah Rekomendasi": `{ "id_mahasiswa": "value", "rekomendasi": ["Sistem Basis Data", "Statistika"] }`,
+      // default
+      "default": `{ "id_mahasiswa": "value" }`
+    };
+
+    const body = bodies[name] ?? bodies["default"];
+
+    switch (lang) {
+      case "python":
+        return `import requests\n\nresponse = requests.${method.toLowerCase()}("${fullPath}"${
+          method !== "GET" ? `,\n    json=${body}\n` : ""
+        })\nprint(response.json())`;
+
+      case "curl":
+        return `curl -X ${method} "${fullPath}" \\\n  -H "Content-Type: application/json"${
+          method !== "GET" ? ` \\\n  -d '${body}'` : ""
+        }`;
+
+      case "js":
+        return `fetch("${fullPath}", {\n  method: "${method}",\n  headers: { "Content-Type": "application/json" }${
+          method !== "GET" ? `,\n  body: JSON.stringify(${body})` : ""
+        }\n}).then(res => res.json()).then(console.log);`;
+    }
   };
 
-  const body = bodies[name] ?? bodies["default"];
-
-  switch (lang) {
-    case "python":
-      return `import requests\n\nresponse = requests.${method.toLowerCase()}("${fullPath}"${
-        method !== "GET" ? `,\n    json=${body}\n` : ""
-      })\nprint(response.json())`;
-
-    case "curl":
-      return `curl -X ${method} "${fullPath}" \\\n  -H "Content-Type: application/json"${
-        method !== "GET" ? ` \\\n  -d '${body}'` : ""
-      }`;
-
-    case "js":
-      return `fetch("${fullPath}", {\n  method: "${method}",\n  headers: { "Content-Type": "application/json" }${
-        method !== "GET" ? `,\n  body: JSON.stringify(${body})` : ""
-      }\n}).then(res => res.json()).then(console.log);`;
-  }
-};
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(
+      generateCode(
+        endpointGroups[selectedGroup].endpoints[selectedEndpoint].method,
+        endpointGroups[selectedGroup].endpoints[selectedEndpoint].path,
+        endpointGroups[selectedGroup].endpoints[selectedEndpoint].name
+      )
+    );
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   return (
   <div className="container-fluid vh-100 overflow-auto bg-white py-4">
@@ -191,18 +205,29 @@ const Documents: React.FC = () => {
             </div>
 
             {/* Tampilkan kode */}
-            <SyntaxHighlighter
-              language={lang}
-              style={oneDark}
-              customStyle={{ margin: 0, backgroundColor: 'dark' }}
-              showLineNumbers
-            >
-              {generateCode(
-                endpointGroups[selectedGroup].endpoints[selectedEndpoint].method,
-                endpointGroups[selectedGroup].endpoints[selectedEndpoint].path,
-                endpointGroups[selectedGroup].endpoints[selectedEndpoint].name
-              )}
-            </SyntaxHighlighter>
+            <div className="position-relative my-3 border rounded bg-white text-dark overflow-hidden">
+              <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
+                <span className="text-light">{lang}</span>
+                <button
+                  onClick={handleCopy}
+                  className="btn btn-sm btn-outline-secondary py-0 px-2"
+                >
+                  {copied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+              <SyntaxHighlighter
+                language={lang === 'curl'? 'bash' : lang}
+                style={oneDark}
+                customStyle={{ margin: 0, backgroundColor: 'dark' }}
+                showLineNumbers
+              >
+                {generateCode(
+                  endpointGroups[selectedGroup].endpoints[selectedEndpoint].method,
+                  endpointGroups[selectedGroup].endpoints[selectedEndpoint].path,
+                  endpointGroups[selectedGroup].endpoints[selectedEndpoint].name
+                )}
+              </SyntaxHighlighter>
+            </div>
 
             {/* Navigasi endpoint */}
             <div className="d-flex justify-content-between mt-3">
