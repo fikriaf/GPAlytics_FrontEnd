@@ -91,7 +91,7 @@ const Documents: React.FC = () => {
   switch (lang) {
     case "python":
       return `import requests\n\nresponse = requests.${method.toLowerCase()}("${fullPath}"${
-        method !== "GET" ? `, json=${body}` : ""
+        method !== "GET" ? `,\njson=${body}\n` : ""
       })\nprint(response.json())`;
 
     case "curl":
