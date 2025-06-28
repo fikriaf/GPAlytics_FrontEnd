@@ -79,7 +79,7 @@ function Login() {
                         <hr />
                         <div className='formnya'>
                             <form onSubmit={handleSubmit}>
-                                <div className="mb-4 mt-3">
+                                <div className="mb-5 mt-3">
                                     <label htmlFor="email" className="form-label">Email</label>
                                     <input
                                     type="email"
