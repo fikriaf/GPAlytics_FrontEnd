@@ -79,7 +79,7 @@ function Login() {
                         <hr />
                         <div className='formnya'>
                             <form onSubmit={handleSubmit}>
-                                <div className="mb-3 mt-3">
+                                <div className="mb-4 mt-3">
                                     <label htmlFor="email" className="form-label">Email</label>
                                     <input
                                     type="email"
@@ -133,7 +133,7 @@ function Login() {
                                 </button>
                             </form>
                             <hr />
-                            <div className='d-grid gap-3 align-items-center justify-content-center my-5 py-3'>
+                            <div className='d-grid gap-3 align-items-center justify-content-center my-5 mt-3 py-3'>
                                 <div className='loginGoogle'>
                                     <a href="" className='btn button-scale btn-outline-light d-flex gap-2 align-items-center'>
                                         <div className='logoGoogle d-flex align-items-center'>
