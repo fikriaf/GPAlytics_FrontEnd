@@ -176,6 +176,25 @@ const Documents: React.FC = () => {
                     </div>
                 </div>
               )}
+              {/* {endpointGroups[selectedGroup].endpoints[selectedEndpoint].params && (
+                <div className="m-3">
+                  <h6>Params:</h6>
+                  <div className="position-relative my-3 border rounded text-dark overflow-hidden">
+                    <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
+                      <span className="text-light">json</span>
+                    </div>
+                    <pre className="rounded">
+                      <SyntaxHighlighter
+                        language="json"
+                        style={oneDark}
+                        customStyle={{ margin: 0, backgroundColor: 'dark' }}
+                      >
+                      {JSON.stringify(endpointGroups[selectedGroup].endpoints[selectedEndpoint].params, null, 2)}
+                      </SyntaxHighlighter>
+                  </pre>
+                    </div>
+                </div>
+              )} */}
             </div>
 
             {/* Navigasi endpoint */}

@@ -143,8 +143,7 @@ const StatistikAkademik = () => {
     const nilaiMinimumIPK = Math.min(...semuaIPK);
     const semuaRegresi = regresi.flatMap(item => [item.prediksi]);
     const nilaiMinimumRegresi = Math.floor(Math.min(...semuaRegresi));
-
-    console.log(nilaiMinimumRegresi)
+    
 
     return (
         <div className="statistik-akademik container-fluid min-vh-100 bg-light">

@@ -17,7 +17,16 @@ export const endpointGroups: {
         { name: "Ambil Semua Mahasiswa", method: "GET", path: "/api/mahasiswa" },
         { name: "Ambil Mahasiswa Berdasarkan Email", method: "GET", path: "/api/mahasiswa/:email", params: ["email"] },
         { name: "Tambah Mahasiswa", method: "POST", path: "/api/mahasiswa", body: { email: "string", nama: "string", angkatan: "number" } },
-        { name: "Update Mahasiswa", method: "PUT", path: "/api/mahasiswa/:email", params: ["email"], body: { nama: "string", angkatan: "number" } },
+        { name: "Update Mahasiswa", method: "PUT", path: "/api/mahasiswa/:email", params: ["email"], body: {
+            nama: "String",
+            nim: "String",
+            prodi: "String",
+            angkatan: "Number",
+            gender: "String",
+            umur: "String",
+            photo: "String",
+            password: "String"
+        } },
         { name: "Hapus Mahasiswa", method: "DELETE", path: "/api/mahasiswa/:email", params: ["email"] }
         ]
     },
@@ -34,7 +43,7 @@ export const endpointGroups: {
     {
         title: "Nilai",
         endpoints: [
-        { name: "Ambil Semua Nilai Mahasiswa", method: "GET", path: "/api/nilai/all" },
+        { name: "Ambil Semua Nilai Mahasiswa", method: "GET", path: "/api/nilai/all?id_mahasiswa=" },
         { name: "Tambah Nilai", method: "POST", path: "/api/nilai", body: { id_mahasiswa: "string", id_mk: "string", tipe_nilai: "string", nilai: "number", semester: "number" } },
         { name: "Edit Nilai", method: "PUT", path: "/api/nilai", body: { id_nilai: "string", nilai: "number" } },
         { name: "Hapus Nilai", method: "DELETE", path: "/api/nilai", body: { id_nilai: "string" } }
@@ -44,7 +53,7 @@ export const endpointGroups: {
         title: "Rekomendasi",
         endpoints: [
         { name: "Ambil Semua Rekomendasi", method: "GET", path: "/api/rekomendasi" },
-        { name: "Tambah Rekomendasi", method: "POST", path: "/api/rekomendasi", body: { id_mahasiswa: "string", rekomendasi: ["string"] } },
+        { name: "Tambah Rekomendasi", method: "POST", path: "/api/rekomendasi", body: { id_mahasiswa: "string", rekomendasi: "string" } },
         { name: "Ambil Rekomendasi Berdasarkan ID", method: "GET", path: "/api/rekomendasi/:id", params: ["id"] },
         { name: "Edit Rekomendasi", method: "PUT", path: "/api/rekomendasi/:id", params: ["id"], body: { rekomendasi: ["string"] } }
         ]
@@ -61,8 +70,8 @@ export const endpointGroups: {
     {
         title: "IP/IPK",
         endpoints: [
-        { name: "Ambil Data IPK Mahasiswa", method: "GET", path: "/api/ip/ipk" },
-        { name: "Ambil Data IPS Mahasiswa", method: "GET", path: "/api/ip/ips" }
+        { name: "Ambil Data IPK Mahasiswa", method: "GET", path: "/api/ip/ipk?id_mahasiswa=&semester=" },
+        { name: "Ambil Data IPS Mahasiswa", method: "GET", path: "/api/ip/ips?id_mahasiswa=" }
         ]
     }
 ];

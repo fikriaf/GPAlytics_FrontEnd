@@ -73,13 +73,13 @@ function Login() {
                     <div ref={overlayRef} className={`p-5 h-100 rounded text-white loginOverlay formOverlay ${animationClass}`}>
                         <div className='headLogin d-grid'>
                             <h3>Selamat Datang Kembali</h3>
-                            <span>Masukkan Email dan Password untuk mengakses</span>
-                            <span> akun Anda.</span>
+                            <span>Masukkan Email dan Password</span>
+                            <span>untuk mengakses akun Anda.</span>
                         </div>
                         <hr />
                         <div className='formnya'>
                             <form onSubmit={handleSubmit}>
-                                <div className="mb-5 mt-3">
+                                <div className="mb-3 mt-3">
                                     <label htmlFor="email" className="form-label">Email</label>
                                     <input
                                     type="email"
@@ -128,7 +128,7 @@ function Login() {
                                         /> Remember me
                                     </label>
                                 </div>
-                                <button type="submit" className="btn button-scale btn-login btn-form shadow text-white w-100 mt-2">
+                                <button type="submit" className="btn button-scale btn-login btn-form shadow text-white w-100 mt-2 mb-2">
                                     <FiLogIn  /> Log In
                                 </button>
                             </form>

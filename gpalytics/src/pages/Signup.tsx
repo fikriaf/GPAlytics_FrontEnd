@@ -74,7 +74,7 @@ function Signup() {
                         </div>
                     )}
                     <div ref={overlayRef} className={`p-5 h-100 rounded text-white signupOverlay formOverlay ${animationClass}`}>
-                        <div className='headLogin pb-4 d-flex px-5 mx-3'>
+                        <div className='headLogin pb-4 d-flex justify-content-center w-100'>
                             <h3 className='text-multicolor'>Mulai Sekarang !</h3>
                         </div>
                         <div className='formnya'>
