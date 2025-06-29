@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { motion, AnimatePresence } from "framer-motion";
 import { FiArrowLeft } from "react-icons/fi";
 import { endpointGroups } from "../components/endpointGroups";
 const HOST = "https://gpalyticsbackend-production.up.railway.app";
@@ -96,7 +97,7 @@ const Documents: React.FC = () => {
       {/* Endpoint detail tampil penuh */}
       <div className="flex-grow-1">
         <div className="card shadow shadow-bottom border-0">
-          <div className="card-body">
+          <div className="card-body overflow-hidden">
             <h3 className="mb-3 fw-bold">
               <span
                 className={`badge text-white px-2 py-1 rounded`}
@@ -135,68 +136,78 @@ const Documents: React.FC = () => {
             </div>
 
             {/* Tampilkan kode */}
-            <div className="position-relative my-3 border rounded bg-white text-dark overflow-hidden">
-              <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
-                <span className="text-light">{lang}</span>
-                <button
-                  onClick={handleCopy}
-                  className="btn btn-sm btn-outline-secondary py-0 px-2"
-                >
-                  {copied ? 'Copied!' : 'Copy'}
-                </button>
-              </div>
-              <SyntaxHighlighter
-                language={lang === 'curl'? 'bash' : lang}
-                style={oneDark}
-                customStyle={{ margin: 0, backgroundColor: 'dark' }}
-                showLineNumbers
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${selectedGroup}-${selectedEndpoint}`}
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0.8, opacity: 1 }}
+                exit={{ x: -100, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeInOut" }}
+                className="card-body"
               >
-                {generateCode(
-                  endpointGroups[selectedGroup].endpoints[selectedEndpoint].method,
-                  endpointGroups[selectedGroup].endpoints[selectedEndpoint].path,
-                  endpointGroups[selectedGroup].endpoints[selectedEndpoint].name
-                )}
-              </SyntaxHighlighter>
-              {endpointGroups[selectedGroup].endpoints[selectedEndpoint].body && (
-                <div className="m-3">
-                  <h6>Body:</h6>
-                  <div className="position-relative my-3 border rounded text-dark overflow-hidden">
-                    <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
-                      <span className="text-light">json</span>
+                <div className="position-relative my-3 border rounded bg-white text-dark overflow-hidden">
+                  <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
+                    <span className="text-light">{lang}</span>
+                    <button
+                      onClick={handleCopy}
+                      className="btn btn-sm btn-outline-secondary py-0 px-2"
+                    >
+                      {copied ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
+                  <SyntaxHighlighter
+                    language={lang === 'curl'? 'bash' : lang}
+                    style={oneDark}
+                    customStyle={{ margin: 0, backgroundColor: 'dark' }}
+                    showLineNumbers
+                  >
+                    {generateCode(
+                      endpointGroups[selectedGroup].endpoints[selectedEndpoint].method,
+                      endpointGroups[selectedGroup].endpoints[selectedEndpoint].path,
+                      endpointGroups[selectedGroup].endpoints[selectedEndpoint].name
+                    )}
+                  </SyntaxHighlighter>
+                  {endpointGroups[selectedGroup].endpoints[selectedEndpoint].body && (
+                    <div className="m-3">
+                      <h6>Body:</h6>
+                      <div className="position-relative my-3 border rounded text-dark overflow-hidden">
+                        <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
+                          <span className="text-light">json</span>
+                        </div>
+                        <pre className="rounded">
+                          <SyntaxHighlighter
+                            language="json"
+                            style={oneDark}
+                            customStyle={{ margin: 0, backgroundColor: 'dark' }}
+                          >
+                          {JSON.stringify(endpointGroups[selectedGroup].endpoints[selectedEndpoint].body, null, 2)}
+                          </SyntaxHighlighter>
+                        </pre>
+                        </div>
                     </div>
-                    <pre className="rounded">
-                      <SyntaxHighlighter
-                        language="json"
-                        style={oneDark}
-                        customStyle={{ margin: 0, backgroundColor: 'dark' }}
-                      >
-                      {JSON.stringify(endpointGroups[selectedGroup].endpoints[selectedEndpoint].body, null, 2)}
-                      </SyntaxHighlighter>
-                    </pre>
+                  )}
+                  {/* {endpointGroups[selectedGroup].endpoints[selectedEndpoint].params && (
+                    <div className="m-3">
+                      <h6>Params:</h6>
+                      <div className="position-relative my-3 border rounded text-dark overflow-hidden">
+                        <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
+                          <span className="text-light">json</span>
+                        </div>
+                        <pre className="rounded">
+                          <SyntaxHighlighter
+                            language="json"
+                            style={oneDark}
+                            customStyle={{ margin: 0, backgroundColor: 'dark' }}
+                          >
+                          {JSON.stringify(endpointGroups[selectedGroup].endpoints[selectedEndpoint].params, null, 2)}
+                          </SyntaxHighlighter>
+                      </pre>
+                        </div>
                     </div>
+                  )} */}
                 </div>
-              )}
-              {/* {endpointGroups[selectedGroup].endpoints[selectedEndpoint].params && (
-                <div className="m-3">
-                  <h6>Params:</h6>
-                  <div className="position-relative my-3 border rounded text-dark overflow-hidden">
-                    <div className="d-flex justify-content-between align-items-center px-3 py-1 border-bottom bg-dark small">
-                      <span className="text-light">json</span>
-                    </div>
-                    <pre className="rounded">
-                      <SyntaxHighlighter
-                        language="json"
-                        style={oneDark}
-                        customStyle={{ margin: 0, backgroundColor: 'dark' }}
-                      >
-                      {JSON.stringify(endpointGroups[selectedGroup].endpoints[selectedEndpoint].params, null, 2)}
-                      </SyntaxHighlighter>
-                  </pre>
-                    </div>
-                </div>
-              )} */}
-            </div>
-
+              </motion.div>
+            </AnimatePresence>
             {/* Navigasi endpoint */}
             <div className="d-flex justify-content-between mt-3">
               <button
