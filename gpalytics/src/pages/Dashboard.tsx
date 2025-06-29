@@ -178,7 +178,7 @@ const GPALyticsDashboard = () => {
                                                     <div className="spinner-border spinner-border-sm text-primary" role="status" />
                                                 </div>
                                             ) : (
-                                                <span className='badge bg-info text-dark'>{Allmatkul.length}</span>
+                                                <span className='badge bg-info text-dark'>{Allmatkul?.length}</span>
                                             )}
                                         </h6>
                                         <span className='d-flex m-0 p-0 fw-semibold'>Tugas | UTS | UAS</span>
@@ -189,8 +189,8 @@ const GPALyticsDashboard = () => {
                                                 <li key={index} className={`list-group-item d-flex justify-content-between 
                                                 ${index%2 == 0? 'bg-light' : 'bg-white'}`}
                                                 >
-                                                    <span>{item.nama_mk}</span>
-                                                    <span>{item.penilaian.tugas}% | {item.penilaian.uts}% | {item.penilaian.uas}%</span>
+                                                    <span>{item?.nama_mk}</span>
+                                                    <span>{item.penilaian?.tugas}% | {item.penilaian?.uts}% | {item.penilaian?.uas}%</span>
                                                 </li>
                                             ))
                                         ): (
