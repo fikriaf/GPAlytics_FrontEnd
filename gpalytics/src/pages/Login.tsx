@@ -87,7 +87,7 @@ function Login() {
                                     id="email"
                                     placeholder="Enter email"
                                     name="email"
-                                    value={form.email || "haungji@gmail.com"}
+                                    value={form?.email || "haungji@gmail.com"}
                                     onChange={handleChange}
                                     required
                                     />
@@ -100,7 +100,7 @@ function Login() {
                                     id="pwd"
                                     placeholder="Enter password"
                                     name="password"
-                                    value={form.password || "ngalahna"}
+                                    value={form?.password || "ngalahna"}
                                     onChange={handleChange}
                                     required
                                     />
