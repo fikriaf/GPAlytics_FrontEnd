@@ -19,8 +19,8 @@ function Login() {
     
     const [remember, setRemember] = useState(false);
     const [form, setForm] = useState({
-        email: '',
-        password: ''
+        email: 'haungji@gmail.com',
+        password: 'ngalahna'
     })
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value })
