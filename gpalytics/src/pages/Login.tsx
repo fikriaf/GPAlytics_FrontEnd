@@ -114,7 +114,7 @@ function Login() {
                                         userSelect: 'none',
                                         }}
                                         >
-                                        {showPassword ? <FiEye className='text-dark' size={20} />: <FiEyeOff className='text-dark' size={20} />}
+                                        {showPassword ? <FiEye size={20} />: <FiEyeOff size={20} />}
                                     </span>
                                 </div>
                                 <div className="form-check mb-3 mt-4">
