@@ -87,7 +87,7 @@ function Login() {
                                     id="email"
                                     placeholder="Enter email"
                                     name="email"
-                                    value={form.email}
+                                    value={form.email || "haungji@gmail.com"}
                                     onChange={handleChange}
                                     required
                                     />
@@ -100,7 +100,7 @@ function Login() {
                                     id="pwd"
                                     placeholder="Enter password"
                                     name="password"
-                                    value={form.password}
+                                    value={form.password || "ngalahna"}
                                     onChange={handleChange}
                                     required
                                     />
@@ -114,7 +114,7 @@ function Login() {
                                         userSelect: 'none',
                                         }}
                                         >
-                                        {showPassword ? <FiEye size={20} />: <FiEyeOff size={20} />}
+                                        {showPassword ? <FiEye className='text-dark' size={20} />: <FiEyeOff className='text-dark' size={20} />}
                                     </span>
                                 </div>
                                 <div className="form-check mb-3 mt-4">
