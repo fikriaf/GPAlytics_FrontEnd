@@ -2,7 +2,7 @@
 # GPAlytics
 
 The `gpalytics` subfolder is part of the GPAlytics FrontEnd project, designed to handle key features of an academic GPA data analysis system.
-
+![Preview](https://github.com/fikriaf/GPAlytics_FrontEnd/blob/main/Preview.png)
 # Main Features
 
 - Visualizes student GPA data
