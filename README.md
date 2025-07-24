@@ -5,18 +5,21 @@
 </p>
 
 <p align="center">
-   <a href="#"><img src="https://img.shields.io/badge/React-42%25-61DAFB?style=flat&logo=react&logoColor=black"></a>
-   <a href="#"><img src="https://img.shields.io/badge/Express-29%25-000000?style=flat&logo=express&logoColor=white"></a>
-   <a href="#"><img src="https://img.shields.io/badge/MongoDB-16%25-47A248?style=flat&logo=mongodb&logoColor=white"></a>
-   <a href="#"><img src="https://img.shields.io/badge/Bootstrap-9%25-7952B3?style=flat&logo=bootstrap&logoColor=white"></a>
-   <a href="#"><img src="https://img.shields.io/badge/CSS-4%25-264DE4?style=flat&logo=css3&logoColor=white"></a>
+    <a href="#"><img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=react&logoColor=black"></a>
+    <a href="#"><img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Express-000000?style=flat&logo=express&logoColor=white"></a>
+    <a href="#"><img src="https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white"></a>
+</p>
+
+<p align="center">
   <a href="#"><img src="https://img.shields.io/github/repo-size/fikriaf/GPAlytics_FrontEnd?color=blue"></a>
   <a href="#"><img src="https://img.shields.io/github/languages/code-size/fikriaf/GPAlytics_FrontEnd?color=green"></a>
 </p>
 
 <p align="center">
   Live UI:
-  <a href="https://ai-vision-web.vercel.app/" target="_blank">https://ai-vision-web.vercel.app/</a>
+  <a href="https://gpalytics-two.vercel.app/" target="_blank">https://gpalytics-two.vercel.app/</a>
 </p>
 
 The `gpalytics` subfolder is part of the GPAlytics FrontEnd project, designed to handle key features of an academic GPA data analysis system.
